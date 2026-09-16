@@ -1,0 +1,82 @@
+rules_version = '2';
+
+// Regras de segurança do NexoGestão.
+// Princípio central: todo documento de dados possui um campo "businessId"
+// igual ao uid do dono, e só esse usuário autenticado pode ler ou escrever.
+// O frontend nunca é a única camada de segurança — tudo é validado aqui.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(businessId) {
+      return isSignedIn() && request.auth.uid == businessId;
+    }
+
+    function ownsExisting() {
+      return isOwner(resource.data.businessId);
+    }
+
+    function ownsIncoming() {
+      return isOwner(request.resource.data.businessId)
+        && request.resource.data.businessId == request.auth.uid;
+    }
+
+    // Documento da empresa — o ID do documento é o próprio uid do usuário.
+    match /businesses/{businessId} {
+      allow read, update: if isOwner(businessId);
+      allow create: if isOwner(businessId);
+      allow delete: if false; // exclusão de conta segue fluxo próprio, não direto pelo app
+    }
+
+    match /clients/{docId} {
+      allow read, update, delete: if ownsExisting();
+      allow create: if ownsIncoming();
+    }
+
+    match /services/{docId} {
+      allow read, update, delete: if ownsExisting();
+      allow create: if ownsIncoming();
+    }
+
+    match /products/{docId} {
+      allow read, update, delete: if ownsExisting();
+      allow create: if ownsIncoming();
+    }
+
+    match /appointments/{docId} {
+      allow read, update, delete: if ownsExisting();
+      allow create: if ownsIncoming();
+    }
+
+    match /sales/{docId} {
+      allow read, delete: if ownsExisting();
+      allow create: if ownsIncoming();
+      allow update: if ownsExisting() && ownsIncoming();
+    }
+
+    match /saleItems/{docId} {
+      allow read, update, delete: if ownsExisting();
+      allow create: if ownsIncoming();
+    }
+
+    match /transactions/{docId} {
+      allow read, update, delete: if ownsExisting();
+      allow create: if ownsIncoming();
+    }
+
+    match /notifications/{docId} {
+      allow read, update, delete: if ownsExisting();
+      allow create: if ownsIncoming();
+    }
+
+    match /activityLogs/{docId} {
+      allow read: if ownsExisting();
+      allow create: if ownsIncoming();
+      allow update, delete: if false; // histórico é imutável
+    }
+  }
+}

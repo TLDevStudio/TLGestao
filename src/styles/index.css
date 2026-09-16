@@ -1,0 +1,860 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap");
+
+@theme {
+  /* Cores da marca NexoGestão */
+  --color-pine-950: #0d1f1a;
+  --color-pine-900: #132a24;
+  --color-pine-800: #1b3a32;
+  --color-pine-700: #244d42;
+  --color-pine-600: #2f6355;
+
+  --color-amber-500: #e8a33d;
+  --color-amber-600: #d38f2b;
+  --color-amber-100: #fbe8ca;
+
+  --color-paper: #fafaf7;
+  --color-paper-dim: #f2f1ea;
+  --color-line: #e6e3d8;
+  --color-ink: #1c1f1d;
+  --color-ink-soft: #5c6560;
+  --color-surface: #ffffff;
+
+  --color-danger: #c1443a;
+  --color-danger-100: #fbe6e3;
+  --color-success: #2f7a52;
+  --color-success-100: #e4f3ea;
+
+  --font-display: "Space Grotesk", "Inter", sans-serif;
+  --font-sans: "Inter", sans-serif;
+}
+
+html {
+  font-family: var(--font-sans);
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+::selection {
+  background-color: var(--color-amber-100);
+  color: var(--color-ink);
+}
+
+/* Tema escuro — sobrescreve os tokens semânticos de cor.
+   Como os componentes usam utilitários como bg-paper, text-ink, border-line
+   (e não cores fixas), essa troca de variáveis já atualiza a interface toda. */
+.dark {
+  --color-paper: #14171a;
+  --color-paper-dim: #1c2023;
+  --color-line: #2a2f33;
+  --color-ink: #f2f1ea;
+  --color-ink-soft: #9aa0a6;
+}
+
+.dark body {
+  background-color: var(--color-paper);
+}
+
+/* Superfícies de cartão/modal/tabela usam bg-surface (não bg-white) para poder
+   escurecer junto com o restante da interface no tema escuro. */
+.dark .bg-surface {
+  background-color: #1a1e21;
+}
+
+/* Scrollbar discreta */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-line);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-ink-soft);
+}
+
+/* Skeleton loading */
+@keyframes skeleton-pulse {
+
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.skeleton {
+  background-color: var(--color-line);
+  border-radius: 0.5rem;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+/* Toast enter animation */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.toast-enter {
+  animation: toast-in 0.18s ease-out;
+}
+
+/* Modal */
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-enter {
+  animation: modal-in 0.16s ease-out;
+}
+
+/* Impressão de relatórios: esconde navegação, mostra só o conteúdo */
+@media print {
+
+  aside,
+  header {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* ============================================================================
+   RESPONSIVIDADE — MOBILE
+   ============================================================================ */
+
+/* ---- 1. Nada pode ser mais largo que a tela ---- */
+
+html,
+body,
+#root {
+  max-width: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+}
+
+/* Filhos de flex/grid têm min-width:auto por padrão, e é isso que faz
+   um item largo (tabela, texto comprido, badge) empurrar a página inteira
+   para o lado. */
+:where(main, aside, header) :where(*) {
+  min-width: 0;
+}
+
+img,
+svg,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---- 2. Sem zoom ao tocar em um input (iOS Safari) ---- */
+
+input,
+select,
+textarea,
+button {
+  font-size: 16px;
+}
+
+@media (min-width: 768px) {
+
+  input,
+  select,
+  textarea,
+  button {
+    font-size: inherit;
+  }
+}
+
+/* Evita o zoom por duplo toque e o flash cinza do tap no Android */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+button,
+a,
+select,
+[role="button"],
+[role="tab"],
+label {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---- 3. Ajustes que só valem no mobile ---- */
+
+@media (max-width: 767px) {
+
+  /* 3.1 Respiro lateral consistente + área segura do iPhone */
+  main {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    overflow-wrap: break-word;
+  }
+
+  header {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  /* 3.2 Grades: qualquer grid-cols-* vira 1 ou 2 colunas conforme couber.
+     Cards de KPI ficam 2 por linha em telas de ~360px. */
+  [class*="grid-cols-"] {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+  }
+
+  /* Blocos grandes sempre em coluna única */
+  [class*="lg:grid-cols-2"],
+  [class*="lg:grid-cols-3"],
+  [class*="xl:grid-cols-2"] {
+    grid-template-columns: 1fr;
+  }
+
+  /* 3.3 Barras de ação quebram em linhas */
+  [class*="justify-between"],
+  [class*="items-center"][class*="gap-"] {
+    flex-wrap: wrap;
+  }
+
+  /* Campo de busca ocupa a linha inteira */
+  main input[type="search"],
+  main input[type="text"][placeholder*="esquisar"],
+  main input[type="text"][placeholder*="uscar"] {
+    width: 100%;
+  }
+
+  /* 3.4 Tabelas */
+  :has(> table) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  table {
+    width: max-content;
+    min-width: 100%;
+  }
+
+  th,
+  td {
+    white-space: nowrap;
+  }
+
+  th.wrap,
+  td.wrap {
+    white-space: normal;
+  }
+
+  /* 3.5 Modais */
+  .modal-enter {
+    width: 100%;
+    max-width: calc(100vw - 1.5rem);
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-enter [class*="justify-end"] {
+    flex-wrap: wrap;
+  }
+
+  .modal-enter [class*="justify-end"]>button {
+    flex: 1 1 auto;
+  }
+
+  /* 3.6 Gráficos */
+  .recharts-responsive-container,
+  .recharts-wrapper,
+  .recharts-surface {
+    max-width: 100% !important;
+  }
+
+  /* 3.7 Alvos de toque */
+  button,
+  a[role="button"],
+  [role="tab"],
+  select {
+    min-height: 44px;
+  }
+
+  /* Ícones de ação em tabela */
+  td button {
+    min-height: 36px;
+  }
+
+  /* 3.8 Abas genéricas */
+  [role="tablist"] {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+  }
+
+  [role="tablist"]::-webkit-scrollbar {
+    display: none;
+  }
+
+  [role="tablist"]>* {
+    flex: 0 0 auto;
+  }
+
+  /* 3.9 Números grandes de KPI */
+  main h1,
+  main h2 {
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Telas muito estreitas */
+@media (max-width: 380px) {
+  [class*="grid-cols-"] {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- 4. Utilitário para usar no JSX ---- */
+
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+/* ---- 5. Respeita quem desativou animações ---- */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* ============================================================================
+   CONFIGURAÇÕES — RESPONSIVIDADE ESPECÍFICA
+   ============================================================================
+   
+   Esta seção é específica da tela Configuracoes.jsx.
+   Não altera o funcionamento das outras telas do sistema.
+   ============================================================================ */
+
+/* Container principal da página */
+.configuracoes-page {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+/* Cards da configuração */
+.configuracoes-page .config-card {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Inputs e selects nunca podem ultrapassar o card */
+.configuracoes-page input,
+.configuracoes-page select,
+.configuracoes-page textarea {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* ============================================================================
+   DESKTOP
+   ============================================================================ */
+
+.config-tabs {
+  width: 100%;
+}
+
+.config-tab {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.config-tab span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================================================
+   MOBILE
+   ============================================================================ */
+
+@media (max-width: 767px) {
+
+  /* A tela de configurações ocupa toda a largura disponível */
+  .configuracoes-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  /* ------------------------------------------------------------
+     ABAS
+     
+     Antes:
+     Empresa | Perfil | Preferências -> Segurança ficava fora.
+
+     Agora:
+     
+     Empresa       Perfil
+     Preferências  Segurança
+     
+     Todas aparecem na tela.
+     ------------------------------------------------------------ */
+
+  .configuracoes-page .config-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    max-width: 100%;
+    gap: 4px;
+    overflow: visible;
+  }
+
+  .configuracoes-page .config-tab {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding-left: 8px;
+    padding-right: 8px;
+    gap: 6px;
+  }
+
+  .configuracoes-page .config-tab span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ------------------------------------------------------------
+     CONTEÚDO
+     ------------------------------------------------------------ */
+
+  .configuracoes-page>div:last-child {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* ------------------------------------------------------------
+     CARDS
+     ------------------------------------------------------------ */
+
+  .configuracoes-page .config-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 16px;
+    overflow: hidden;
+  }
+
+  /* ------------------------------------------------------------
+     LOGO / FOTO
+     ------------------------------------------------------------ */
+
+  .configuracoes-page .config-upload-row {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .configuracoes-page .config-upload-row>div {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  /* ------------------------------------------------------------
+     TELEFONE / WHATSAPP
+     
+     Em celulares pequenos, os dois campos ficam um embaixo
+     do outro para evitar qualquer corte lateral.
+     ------------------------------------------------------------ */
+
+  .configuracoes-page .config-form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* ------------------------------------------------------------
+     BOTÕES
+     ------------------------------------------------------------ */
+
+  .configuracoes-page .config-action {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .configuracoes-page .config-action button {
+    max-width: 100%;
+  }
+}
+
+/* ============================================================================
+   CELULARES MUITO PEQUENOS
+   ============================================================================ */
+
+@media (max-width: 380px) {
+
+  .configuracoes-page .config-card {
+    padding: 14px;
+  }
+
+  .configuracoes-page .config-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .configuracoes-page .config-tab {
+    padding-left: 6px;
+    padding-right: 6px;
+    gap: 5px;
+    font-size: 13px;
+  }
+
+  .configuracoes-page .config-tab svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .configuracoes-page .config-upload-row {
+    gap: 12px;
+  }
+
+  .configuracoes-page .config-upload-row button {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+/* ============================================================================
+   TELAS EXTRA PEQUENAS
+   ============================================================================ */
+
+@media (max-width: 330px) {
+
+  .configuracoes-page .config-tab {
+    font-size: 12px;
+    gap: 4px;
+  }
+
+  .configuracoes-page .config-card {
+    padding: 12px;
+  }
+}
+
+/* ============================================================================
+   NOTIFICAÇÕES — RESPONSIVIDADE
+   ============================================================================
+   
+   Desktop:
+   Mantém o painel exatamente no posicionamento original:
+   absolute + right-0 + top-full.
+
+   Mobile:
+   O painel passa a ser fixed para não depender do container do sino.
+   Isso evita que header, overflow ou sidebar empurrem o painel para fora
+   da tela.
+   ============================================================================ */
+
+/* ---- Base ---- */
+
+.notifications-panel {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 90vw;
+}
+
+.notifications-panel-header {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.notifications-mark-all {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.notifications-list {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.notification-item {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.notification-content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.notification-actions {
+  flex-shrink: 0;
+}
+
+/* ============================================================================
+   MOBILE
+   ============================================================================ */
+
+@media (max-width: 767px) {
+
+  /*
+   * O painel deixa de ser relativo ao botão do sino.
+   *
+   * Isso é importante porque no mobile o botão pode estar dentro de um
+   * header/container com largura limitada ou overflow.
+   *
+   * fixed = posicionamento relativo à viewport inteira.
+   */
+  .notifications-panel {
+    position: fixed !important;
+
+    /*
+     * Espaçamento lateral seguro.
+     *
+     * 12px em cada lado evita que a caixa encoste na borda do celular.
+     */
+    left: 12px !important;
+    right: 12px !important;
+
+    /*
+     * O painel ocupa o espaço disponível, mas não fica exageradamente largo.
+     */
+    width: auto !important;
+    max-width: 380px !important;
+
+    /*
+     * Mantém o painel abaixo do header.
+     *
+     * O valor 68px funciona bem para headers mobile na faixa de 56–64px.
+     */
+    top: calc(68px + env(safe-area-inset-top)) !important;
+
+    /*
+     * Como agora é fixed, não precisamos do mt-2 original.
+     */
+    margin-top: 0 !important;
+
+    /*
+     * Garante que fique acima dos outros elementos da interface.
+     */
+    z-index: 9999 !important;
+
+    /*
+     * Evita qualquer conteúdo interno aumentar a largura.
+     */
+    overflow: hidden;
+  }
+
+  /*
+   * Em celulares mais largos, centraliza o painel.
+   *
+   * Exemplo:
+   * celular 430px
+   * painel máximo 380px
+   * sobra 50px -> 25px de cada lado.
+   */
+  @media (min-width: 405px) {
+    .notifications-panel {
+      left: 50% !important;
+      right: auto !important;
+      transform: translateX(-50%);
+      width: calc(100vw - 24px) !important;
+    }
+  }
+
+  /* Cabeçalho das notificações */
+  .notifications-panel-header {
+    gap: 8px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  /*
+   * Evita que "Marcar todas como lidas" force o título
+   * ou o próprio painel para fora.
+   */
+  .notifications-mark-all {
+    flex: 0 1 auto;
+    max-width: 65%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /*
+   * Lista um pouco menor no mobile para não ocupar a tela inteira.
+   */
+  .notifications-list {
+    max-height: min(360px, calc(100dvh - 120px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Itens das notificações */
+  .notification-item {
+    gap: 10px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  /*
+   * Conteúdo central pode encolher sem empurrar
+   * o ícone ou os botões para fora.
+   */
+  .notification-content {
+    flex: 1 1 0%;
+    width: 0;
+    min-width: 0;
+  }
+
+  /*
+   * Botões continuam sempre visíveis.
+   */
+  .notification-actions {
+    flex: 0 0 auto;
+  }
+}
+
+/* ============================================================================
+   CELULARES PEQUENOS
+   ============================================================================ */
+
+@media (max-width: 380px) {
+
+  .notifications-panel {
+    left: 8px !important;
+    right: 8px !important;
+    width: auto !important;
+    max-width: none !important;
+
+    top: calc(64px + env(safe-area-inset-top)) !important;
+  }
+
+  .notifications-panel-header {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .notifications-mark-all {
+    max-width: 58%;
+    font-size: 11px;
+  }
+
+  .notification-item {
+    gap: 8px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .notification-content p {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
+/* ============================================================================
+   CELULARES MUITO PEQUENOS
+   ============================================================================ */
+
+@media (max-width: 330px) {
+
+  .notifications-panel {
+    left: 6px !important;
+    right: 6px !important;
+  }
+
+  .notifications-panel-header {
+    gap: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .notifications-mark-all {
+    max-width: 55%;
+    font-size: 10px;
+  }
+
+  .notification-item {
+    gap: 7px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .notification-item>div:first-child {
+    width: 30px;
+    height: 30px;
+  }
+
+  .notification-actions button {
+    padding: 5px;
+  }
+}
+
+/* ============================================================================
+   TELA MUITO BAIXA
+   ============================================================================ */
+
+@media (max-width: 767px) and (max-height: 600px) {
+
+  .notifications-list {
+    max-height: calc(100dvh - 105px);
+  }
+}
