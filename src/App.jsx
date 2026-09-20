@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ToastProvider } from "./contexts/ToastContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -21,6 +21,15 @@ import Financeiro from "./pages/Financeiro";
 import Relatorios from "./pages/Relatorios";
 import Historico from "./pages/Historico";
 import Configuracoes from "./pages/Configuracoes";
+import AccountStatusGuard from "./routes/AccountStatusGuard";
+
+import AdminGuard from "./routes/AdminGuard";
+import AdminLayout from "./layouts/AdminLayout";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminAccounts from "./pages/admin/AdminAccounts";
+import AdminLogs from "./pages/admin/AdminLogs";
+import AdminSecurity from "./pages/admin/AdminSecurity";
 
 export default function App() {
   return (
@@ -44,7 +53,9 @@ export default function App() {
                 path="/app"
                 element={
                   <PrivateRoute>
-                    <AppLayout />
+                    <AccountStatusGuard>
+                      <AppLayout />
+                    </AccountStatusGuard>
                   </PrivateRoute>
                 }
               >
@@ -60,6 +71,25 @@ export default function App() {
                 <Route path="historico" element={<Historico />} />
                 <Route path="configuracoes" element={<Configuracoes />} />
               </Route>
+
+              {/* Painel administrativo — separado da área do cliente */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route
+                path="/admin"
+                element={
+                  <AdminGuard>
+                    <AdminLayout />
+                  </AdminGuard>
+                }
+              >
+                <Route index element={<Navigate to="dashboard" replace />} />
+                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="contas" element={<AdminAccounts />} />
+                <Route path="logs" element={<AdminLogs />} />
+                <Route path="logs" element={<AdminLogs />} />
+                <Route path="seguranca" element={<AdminSecurity />} />
+              </Route>
+
             </Routes>
           </ToastProvider>
         </ThemeProvider>

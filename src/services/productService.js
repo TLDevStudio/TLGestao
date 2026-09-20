@@ -14,6 +14,7 @@ import {
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { db, storage } from "../firebase/config";
 import { COLLECTIONS } from "../firebase/collections";
+import { assertNotDemoAccount } from "../utils/demoGuard";
 import { logActivity } from "./activityLogService";
 import { createNotification } from "./notificationService";
 
@@ -97,6 +98,7 @@ export async function updateProduct(businessId, productId, data, photoFile) {
 }
 
 export async function deleteProduct(businessId, productId, productName, photoUrl) {
+    assertNotDemoAccount(businessId);
     await deleteDoc(doc(db, COLLECTIONS.PRODUCTS, productId));
 
     if (photoUrl) {

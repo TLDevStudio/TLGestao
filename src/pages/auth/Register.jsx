@@ -6,6 +6,7 @@ import Select from "../../components/ui/Select";
 import Button from "../../components/ui/Button";
 import { registerBusiness, translateAuthError } from "../../services/authService";
 import { maskPhone } from "../../utils/masks";
+import { useToast } from "../../contexts/ToastContext";
 
 const BUSINESS_TYPES = [
   { value: "barbearia", label: "Barbearia" },
@@ -27,6 +28,7 @@ const initialForm = {
 
 export default function Register() {
   const navigate = useNavigate();
+  const toast = useToast();
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -52,6 +54,10 @@ export default function Register() {
     setLoading(true);
     try {
       await registerBusiness(form);
+      // registerBusiness grava accountStatus "pending" (Fase 1). O
+      // AccountStatusGuard (Fase 2) vai mostrar a tela de aguardando
+      // liberação automaticamente ao navegar para /app/dashboard.
+      toast.success("Conta criada! Acompanhe abaixo o status da liberação do seu acesso.");
       navigate("/app/dashboard", { replace: true });
     } catch (err) {
       setError(translateAuthError(err));
@@ -81,9 +87,9 @@ export default function Register() {
         <Input
           id="businessName"
           name="businessName"
-          label="Nome da empresa"
+          label="Sua empresa"
           icon={Building2}
-          placeholder="Nome da sua empresa"
+          placeholder="Digite o nome da sua empresa"
           value={form.businessName}
           onChange={handleChange}
           required
@@ -136,14 +142,14 @@ export default function Register() {
           <p className="rounded-lg bg-danger-100 px-3 py-2 text-sm text-danger">{error}</p>
         )}
 
-        <Button type="submit" className="w-full" loading={loading} size="lg">
+        <Button type="submit" className="btn-fx btn-pine w-full" loading={loading} size="lg">
           Criar conta
         </Button>
       </form>
 
       <p className="text-center text-sm text-ink-soft">
         Já possui uma conta?{" "}
-        <Link to="/entrar" className="font-medium text-pine-800 hover:underline">
+        <Link to="/entrar" className="link-fx text-sm font-medium text-pine-800 hover:none">
           Entrar
         </Link>
       </p>

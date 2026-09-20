@@ -10,6 +10,8 @@ import { useAppointments, useCalendarNavigation } from "../hooks/useAppointments
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
 import { deleteAppointment } from "../services/appointmentService";
+import useIsDemoAccount from "../hooks/useDemoAccount";
+import { DEMO_DISABLED_MESSAGE } from "../utils/demoGuard";
 import {
     formatHeaderLabel,
     formatWeekdayShort,
@@ -27,6 +29,7 @@ const VIEW_OPTIONS = [
 export default function Agendamentos() {
     const { user } = useAuth();
     const toast = useToast();
+    const isDemo = useIsDemoAccount();
     const { view, setView, referenceDate, goToday, goNext, goPrev, goToDate } =
         useCalendarNavigation("day");
     const { appointments, days, loading, error } = useAppointments(view, referenceDate);
@@ -50,6 +53,11 @@ export default function Agendamentos() {
 
     const handleDelete = async () => {
         if (!toDelete) return;
+        if (isDemo) {
+            toast.info(DEMO_DISABLED_MESSAGE);
+            setToDelete(null);
+            return;
+        }
         setDeleting(true);
         try {
             await deleteAppointment(user.uid, toDelete.id, toDelete.clientName);
@@ -100,14 +108,14 @@ export default function Agendamentos() {
                             <button
                                 key={opt.value}
                                 onClick={() => setView(opt.value)}
-                                className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${view === opt.value ? "bg-pine-900 text-white" : "text-ink-soft hover:bg-paper-dim"
+                                className={`btn-fx btn-pine rounded-lg px-3 py-1.5 text-sm font-medium transition ${view === opt.value ? "bg-pine-900 text-white" : "text-ink-soft hover:bg-paper-dim"
                                     }`}
                             >
                                 {opt.label}
                             </button>
                         ))}
                     </div>
-                    <Button icon={Plus} onClick={() => openCreateModal()}>
+                    <Button icon={Plus} onClick={() => openCreateModal()} className="btn-fx btn-pine rounded-xl">
                         Novo agendamento
                     </Button>
                 </div>

@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { COLLECTIONS } from "../firebase/collections";
+import { assertNotDemoAccount } from "../utils/demoGuard";
 import { logActivity } from "./activityLogService";
 import { createNotification } from "./notificationService";
 
@@ -128,6 +129,7 @@ export async function updateAppointmentStatus(businessId, appointment, newStatus
 }
 
 export async function deleteAppointment(businessId, appointmentId, clientName) {
+    assertNotDemoAccount(businessId);
     await deleteDoc(doc(db, COLLECTIONS.APPOINTMENTS, appointmentId));
 
     await logActivity(businessId, {

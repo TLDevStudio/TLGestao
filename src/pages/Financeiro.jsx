@@ -22,6 +22,8 @@ import { useTransactions } from "../hooks/useTransactions";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
 import { deleteTransaction, TRANSACTION_STATUS } from "../services/transactionService";
+import useIsDemoAccount from "../hooks/useDemoAccount";
+import { DEMO_DISABLED_MESSAGE } from "../utils/demoGuard";
 import { PAYMENT_METHODS } from "../services/saleService";
 import { formatCurrency, formatDate } from "../utils/formatters";
 import { PERIOD_OPTIONS } from "../utils/periodHelpers";
@@ -45,6 +47,7 @@ const TYPE_OPTIONS = [
 export default function Financeiro() {
     const { user } = useAuth();
     const toast = useToast();
+    const isDemo = useIsDemoAccount();
 
     const [period, setPeriod] = useState("month");
     const [customStart, setCustomStart] = useState(toDateInputValue(new Date()));
@@ -70,6 +73,11 @@ export default function Financeiro() {
 
     const handleDelete = async () => {
         if (!toDelete) return;
+        if (isDemo) {
+            toast.info(DEMO_DISABLED_MESSAGE);
+            setToDelete(null);
+            return;
+        }
         setDeleting(true);
         try {
             await deleteTransaction(user.uid, toDelete.id, toDelete.description);
@@ -125,7 +133,7 @@ export default function Financeiro() {
                     </div>
                 </div>
 
-                <Button icon={Plus} onClick={openCreate} className="shrink-0">
+                <Button icon={Plus} onClick={openCreate} className="btn-fx btn-pineshrink-0">
                     Novo lançamento
                 </Button>
             </div>

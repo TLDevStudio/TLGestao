@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { COLLECTIONS } from "../firebase/collections";
+import { assertNotDemoAccount } from "../utils/demoGuard";
 import { logActivity } from "./activityLogService";
 
 /**
@@ -87,6 +88,7 @@ export async function updateClient(businessId, clientId, data) {
 }
 
 export async function deleteClient(businessId, clientId, clientName) {
+    assertNotDemoAccount(businessId);
     await deleteDoc(doc(db, COLLECTIONS.CLIENTS, clientId));
 
     await logActivity(businessId, {

@@ -26,6 +26,8 @@ import {
     toggleServiceActive,
 } from "../services/serviceService";
 import { formatCurrency } from "../utils/formatters";
+import useIsDemoAccount from "../hooks/useDemoAccount";
+import { DEMO_DISABLED_MESSAGE } from "../utils/demoGuard";
 
 const COLUMNS = [
     { key: "name", label: "Serviço" },
@@ -149,6 +151,7 @@ function ServiceStatusToggle({ service, onToggle }) {
 export default function Servicos() {
     const { user } = useAuth();
     const toast = useToast();
+    const isDemo = useIsDemoAccount();
 
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("all");
@@ -209,6 +212,11 @@ export default function Servicos() {
 
     const handleDelete = async () => {
         if (!serviceToDelete) return;
+        if (isDemo) {
+            toast.info(DEMO_DISABLED_MESSAGE);
+            setServiceToDelete(null);
+            return;
+        }
 
         setDeleting(true);
 
@@ -291,7 +299,7 @@ export default function Servicos() {
                 <Button
                     icon={Plus}
                     onClick={openCreateModal}
-                    className="w-full sm:w-auto sm:shrink-0"
+                    className="btn-fx btn-pine rounded-xl w-full sm:w-auto sm:shrink-0"
                 >
                     Novo serviço
                 </Button>

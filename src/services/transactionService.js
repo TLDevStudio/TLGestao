@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { COLLECTIONS } from "../firebase/collections";
+import { assertNotDemoAccount } from "../utils/demoGuard";
 import { logActivity } from "./activityLogService";
 
 export const INCOME_CATEGORIES = ["Venda", "Serviço", "Outros"];
@@ -95,6 +96,7 @@ export async function updateTransaction(businessId, transactionId, data) {
 }
 
 export async function deleteTransaction(businessId, transactionId, description) {
+    assertNotDemoAccount(businessId);
     await deleteDoc(doc(db, COLLECTIONS.TRANSACTIONS, transactionId));
 
     await logActivity(businessId, {

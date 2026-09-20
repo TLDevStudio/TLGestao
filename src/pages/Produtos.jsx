@@ -15,6 +15,8 @@ import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
 import { deleteProduct } from "../services/productService";
 import { formatCurrency } from "../utils/formatters";
+import useIsDemoAccount from "../hooks/useDemoAccount";
+import { DEMO_DISABLED_MESSAGE } from "../utils/demoGuard";
 
 const COLUMNS = [
     { key: "product", label: "Produto" },
@@ -28,6 +30,7 @@ const COLUMNS = [
 export default function Produtos() {
     const { user } = useAuth();
     const toast = useToast();
+    const isDemo = useIsDemoAccount();
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("all");
     const [onlyLowStock, setOnlyLowStock] = useState(false);
@@ -61,6 +64,11 @@ export default function Produtos() {
 
     const handleDelete = async () => {
         if (!productToDelete) return;
+        if (isDemo) {
+            toast.info(DEMO_DISABLED_MESSAGE);
+            setProductToDelete(null);
+            return;
+        }
         setDeleting(true);
         try {
             await deleteProduct(user.uid, productToDelete.id, productToDelete.name, productToDelete.photoUrl);
@@ -121,7 +129,7 @@ export default function Produtos() {
                     </div>
                 </div>
                 {/* Ocupa a linha inteira no mobile, tamanho normal a partir de sm */}
-                <Button icon={Plus} onClick={openCreateModal} className="w-full sm:w-auto sm:shrink-0">
+                <Button icon={Plus} onClick={openCreateModal} className="btn-fx btn-pine w-full sm:w-auto sm:shrink-0">
                     Novo produto
                 </Button>
             </div>

@@ -858,3 +858,177 @@ label {
     max-height: calc(100dvh - 105px);
   }
 }
+
+/* ============================================================================
+   LANDING — ANIMAÇÕES DE ENTRADA AO ROLAR (componente <Reveal>)
+   ============================================================================
+   Cole este bloco NO FINAL do seu index.css.
+
+   data-state:
+     below   = escondido abaixo da tela  -> ao rolar para baixo, ele sobe
+     above   = escondido acima da tela   -> ao rolar para cima, ele desce
+     visible = na tela
+   ============================================================================ */
+
+.reveal {
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 0.8, 0.24, 1),
+    transform 0.8s cubic-bezier(0.22, 0.8, 0.24, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.reveal[data-state="visible"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Estados escondidos: a volta ao "escondido" é rápida e sem atraso,
+   já que acontece fora da tela. */
+.reveal[data-state="below"],
+.reveal[data-state="above"] {
+  opacity: 0;
+  transition-duration: 0.25s;
+  transition-delay: 0ms;
+}
+
+/* variant="up" (padrão) */
+.reveal[data-state="below"] {
+  transform: translate3d(0, var(--reveal-distance, 36px), 0);
+}
+
+.reveal[data-state="above"] {
+  transform: translate3d(0, calc(var(--reveal-distance, 36px) * -1), 0);
+}
+
+/* variant="fade": só aparece, sem deslocamento */
+.reveal[data-variant="fade"][data-state="below"],
+.reveal[data-variant="fade"][data-state="above"] {
+  transform: none;
+}
+
+/* variant="scale": desloca e cresce um pouco */
+.reveal[data-variant="scale"][data-state="below"] {
+  transform: translate3d(0, var(--reveal-distance, 36px), 0) scale(0.94);
+}
+
+.reveal[data-variant="scale"][data-state="above"] {
+  transform: translate3d(0, calc(var(--reveal-distance, 36px) * -1), 0) scale(0.94);
+}
+
+/* Na impressão, tudo aparece normalmente */
+@media print {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ============================================================================
+   LANDING — EFEITOS NOS BOTÕES
+   ============================================================================
+   Cole também no final do index.css.
+ 
+   Classes usadas no JSX:
+     btn-fx      base: transição, brilho que passa e "afundar" ao clicar
+     btn-amber   botão dourado (brilho dourado embaixo ao passar o mouse)
+     btn-pine    botão verde escuro
+     btn-ghost   botão branco com borda
+     btn-arrow   seta que anda para a direita
+     btn-icon    ícone que dá uma leve crescida
+     link-fx     link com sublinhado que "desenha" da esquerda para a direita
+   ============================================================================ */
+
+.btn-fx {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    transform 0.22s cubic-bezier(0.22, 0.8, 0.24, 1),
+    box-shadow 0.25s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* Faixa de luz que atravessa o botão */
+.btn-fx::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(105deg,
+      transparent 35%,
+      rgba(255, 255, 255, 0.5) 50%,
+      transparent 65%);
+  transform: translateX(-130%);
+}
+
+.btn-fx .btn-arrow,
+.btn-fx .btn-icon {
+  transition: transform 0.25s cubic-bezier(0.22, 0.8, 0.24, 1);
+}
+
+/* Efeitos de "passar o mouse" só onde existe mouse (evita hover preso no celular) */
+@media (hover: hover) {
+  .btn-fx:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn-fx:hover::after {
+    transform: translateX(130%);
+    transition: transform 0.75s ease;
+  }
+
+  .btn-fx:hover .btn-arrow {
+    transform: translateX(4px);
+  }
+
+  .btn-fx:hover .btn-icon {
+    transform: scale(1.2);
+  }
+
+  .btn-amber:hover {
+    box-shadow: 0 12px 26px -10px rgba(232, 163, 61, 0.75);
+  }
+
+  .btn-pine:hover {
+    box-shadow: 0 12px 26px -12px rgba(19, 42, 36, 0.7);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--color-pine-700);
+    box-shadow: 0 10px 22px -14px rgba(19, 42, 36, 0.45);
+  }
+}
+
+/* Clique: o botão "afunda" (funciona também no toque) */
+.btn-fx:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: none;
+  transition-duration: 0.08s;
+}
+
+/* Foco por teclado bem visível */
+.btn-fx:focus-visible,
+.link-fx:focus-visible {
+  outline: 2px solid var(--color-amber-500);
+  outline-offset: 3px;
+}
+
+/* Link com sublinhado animado */
+.link-fx {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0 1.5px;
+  padding-bottom: 2px;
+  transition: background-size 0.28s ease, color 0.2s ease;
+}
+
+@media (hover: hover) {
+  .link-fx:hover {
+    background-size: 100% 1.5px;
+  }
+}

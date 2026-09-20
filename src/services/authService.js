@@ -8,6 +8,9 @@ import {
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../firebase/config";
 import { COLLECTIONS } from "../firebase/collections";
+import { ACCOUNT_STATUS, ROLES } from "../utils/accountStatus";
+import { DEMO_CONFIG } from "../config/demo";
+import { DEMO_DISABLED_MESSAGE } from "../utils/demoGuard";
 
 /**
  * Cria a conta no Firebase Authentication e o documento correspondente
@@ -44,6 +47,10 @@ export async function registerBusiness({
       clientsCreated: false,
       firstUseDone: false,
     },
+    // Toda conta nova nasce pendente: só ganha acesso completo quando o
+    // administrador liberar (ver AccountStatusGuard, próxima etapa).
+    accountStatus: ACCOUNT_STATUS.PENDING,
+    role: ROLES.USER,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
@@ -61,12 +68,20 @@ export async function logout() {
 }
 
 export async function resetPassword(email) {
+  // Ninguém deve conseguir trocar a senha da conta demo pública, nem
+  // pela tela de "Esqueci minha senha" (que não exige estar logado).
+  if (email?.trim().toLowerCase() === DEMO_CONFIG.email.toLowerCase()) {
+    const error = new Error(DEMO_DISABLED_MESSAGE);
+    error.code = "demo/action-disabled";
+    throw error;
+  }
   await sendPasswordResetEmail(auth, email);
 }
 
 /** Traduz códigos de erro do Firebase para mensagens amigáveis em português. */
 export function translateAuthError(error) {
   const code = error?.code || "";
+  if (code === "demo/action-disabled") return DEMO_DISABLED_MESSAGE;
   const map = {
     "auth/email-already-in-use": "Este e-mail já está cadastrado.",
     "auth/invalid-email": "E-mail inválido.",

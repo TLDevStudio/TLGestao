@@ -11,4 +11,7 @@ export const COLLECTIONS = {
   TRANSACTIONS: "transactions",
   NOTIFICATIONS: "notifications",
   ACTIVITY_LOGS: "activityLogs",
+  ADMIN_LOGS: "adminLogs",
 };
+
+

@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { COLLECTIONS } from "../firebase/collections";
+import { assertNotDemoAccount } from "../utils/demoGuard";
 import { logActivity } from "./activityLogService";
 
 /**
@@ -83,6 +84,7 @@ export async function toggleServiceActive(businessId, service) {
 }
 
 export async function deleteService(businessId, serviceId, serviceName) {
+    assertNotDemoAccount(businessId);
     await deleteDoc(doc(db, COLLECTIONS.SERVICES, serviceId));
 
     await logActivity(businessId, {

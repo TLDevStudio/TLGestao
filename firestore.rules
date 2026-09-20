@@ -25,11 +25,36 @@ service cloud.firestore {
         && request.resource.data.businessId == request.auth.uid;
     }
 
+    // true quando quem está fazendo a requisição é uma conta admin
+    // (campo "role" no próprio documento de negócio, criado na Fase 1).
+    // Usado para o painel administrativo (Fases 7 a 11).
+    function isAdmin() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/businesses/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Impede que uma conta comum altere o próprio "role" ou
+    // "accountStatus" escrevendo direto no Firestore (fora do app).
+    // Só passa se os dois campos continuarem iguais ao que já estava
+    // salvo — qualquer tentativa de mudança nesses dois campos precisa
+    // vir de uma conta admin (ver "allow update" abaixo).
+    function keepsProtectedFields() {
+      return request.resource.data.role == resource.data.role
+        && request.resource.data.accountStatus == resource.data.accountStatus;
+    }
+
     // Documento da empresa — o ID do documento é o próprio uid do usuário.
     match /businesses/{businessId} {
-      allow read, update: if isOwner(businessId);
+      allow read: if isOwner(businessId) || isAdmin();
+      allow update: if (isOwner(businessId) && keepsProtectedFields()) || isAdmin();
       allow create: if isOwner(businessId);
       allow delete: if false; // exclusão de conta segue fluxo próprio, não direto pelo app
+    }
+
+    // Configurações globais do sistema (ex: interruptor do painel
+    // administrativo). Só administradores podem ler ou escrever.
+    match /systemConfig/{docId} {
+      allow read, write: if isAdmin();
     }
 
     match /clients/{docId} {

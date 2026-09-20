@@ -13,6 +13,8 @@ import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
 import { deleteClient } from "../services/clientService";
 import { formatDate } from "../utils/formatters";
+import useIsDemoAccount from "../hooks/useDemoAccount";
+import { DEMO_DISABLED_MESSAGE } from "../utils/demoGuard";
 
 const COLUMNS = [
     { key: "name", label: "Nome" },
@@ -24,6 +26,7 @@ const COLUMNS = [
 export default function Clientes() {
     const { user } = useAuth();
     const toast = useToast();
+    const isDemo = useIsDemoAccount();
     const [search, setSearch] = useState("");
     const { clients, allClientsCount, loading, error } = useClients(search);
 
@@ -46,6 +49,11 @@ export default function Clientes() {
 
     const handleDelete = async () => {
         if (!clientToDelete) return;
+        if (isDemo) {
+            toast.info(DEMO_DISABLED_MESSAGE);
+            setClientToDelete(null);
+            return;
+        }
         setDeleting(true);
         try {
             await deleteClient(user.uid, clientToDelete.id, clientToDelete.name);
@@ -80,7 +88,7 @@ export default function Clientes() {
                     onChange={(e) => setSearch(e.target.value)}
                     containerClassName="w-full sm:max-w-sm"
                 />
-                <Button icon={Plus} onClick={openCreateModal} className="w-full sm:w-auto sm:shrink-0">
+                <Button icon={Plus} onClick={openCreateModal} className="btn-fx btn-pine rounded-xlw-full sm:w-auto sm:shrink-0">
                     Novo cliente
                 </Button>
             </div>
