@@ -29,7 +29,7 @@ export default function OnboardingBanner() {
 
             <div className="mb-1 flex items-center gap-2">
                 <Sparkles size={18} className="text-amber-500" />
-                <h2 className="font-display text-lg font-semibold sm:text-xl">Bem-vindo ao NexoGestão!</h2>
+                <h2 className="font-display text-lg font-semibold sm:text-xl">Bem-vindo ao TLGestão!</h2>
             </div>
             <p className="mb-4 text-sm text-white/70">
                 Complete os passos abaixo para aproveitar o sistema ao máximo.
