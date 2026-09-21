@@ -16,6 +16,6 @@ export async function logActivity(businessId, { action, description }) {
             createdAt: serverTimestamp(),
         });
     } catch (err) {
-        console.error("[NexoGestão] Falha ao registrar histórico:", err);
+        console.error("[TLGestão] Falha ao registrar histórico:", err);
     }
 }

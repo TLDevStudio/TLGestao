@@ -29,7 +29,7 @@ export function subscribeServices(businessId, onChange, onError) {
         q,
         (snap) => onChange(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
         (err) => {
-            console.error("[NexoGestão] Erro ao escutar serviços:", err);
+            console.error("[TLGestão] Erro ao escutar serviços:", err);
             onError?.(err);
         }
     );

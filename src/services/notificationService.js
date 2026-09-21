@@ -32,7 +32,7 @@ export async function createNotification(businessId, { type, title, message }) {
     } catch (err) {
         // Notificação é um "extra" — uma falha aqui nunca deve travar a ação principal
         // (criar venda, ajustar estoque, etc.), então só logamos o erro.
-        console.error("[NexoGestão] Falha ao criar notificação:", err);
+        console.error("[TLGestão] Falha ao criar notificação:", err);
     }
 }
 
@@ -48,7 +48,7 @@ export function subscribeNotifications(businessId, onChange, onError) {
         q,
         (snap) => onChange(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
         (err) => {
-            console.error("[NexoGestão] Erro ao escutar notificações:", err);
+            console.error("[TLGestão] Erro ao escutar notificações:", err);
             onError?.(err);
         }
     );

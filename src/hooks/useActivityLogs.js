@@ -34,7 +34,7 @@ export function useActivityLogs() {
                 setLoading(false);
             },
             (err) => {
-                console.error("[NexoGestão] Erro ao escutar histórico:", err);
+                console.error("[TLGestão] Erro ao escutar histórico:", err);
                 setError("Não foi possível carregar o histórico.");
                 setLoading(false);
             }

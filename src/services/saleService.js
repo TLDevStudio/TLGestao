@@ -35,7 +35,7 @@ export function subscribeSales(businessId, onChange, onError) {
         q,
         (snap) => onChange(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
         (err) => {
-            console.error("[NexoGestão] Erro ao escutar vendas:", err);
+            console.error("[TLGestão] Erro ao escutar vendas:", err);
             onError?.(err);
         }
     );

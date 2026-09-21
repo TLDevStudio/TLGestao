@@ -40,7 +40,7 @@ export function subscribeAppointmentsInRange(businessId, start, end, onChange, o
         q,
         (snap) => onChange(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
         (err) => {
-            console.error("[NexoGestão] Erro ao escutar agendamentos:", err);
+            console.error("[TLGestão] Erro ao escutar agendamentos:", err);
             onError?.(err);
         }
     );

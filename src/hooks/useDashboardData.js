@@ -16,7 +16,7 @@ export function useDashboardData() {
       const result = await getDashboardData(user.uid);
       setData(result);
     } catch (err) {
-      console.error("[NexoGestão] Erro ao carregar dashboard:", err);
+      console.error("[TLGestão] Erro ao carregar dashboard:", err);
       setError("Não foi possível carregar os dados do dashboard.");
     } finally {
       setLoading(false);

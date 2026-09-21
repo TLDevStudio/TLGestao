@@ -21,7 +21,7 @@ const missingKeys = Object.entries(firebaseConfig)
 if (missingKeys.length > 0) {
   // Aviso apenas em desenvolvimento — ajuda a identificar .env incompleto.
   console.warn(
-    `[NexoGestão] Configuração do Firebase incompleta. Variáveis ausentes: ${missingKeys.join(
+    `[TLGestão] Configuração do Firebase incompleta. Variáveis ausentes: ${missingKeys.join(
       ", "
     )}. Verifique o arquivo .env com base em .env.example.`
   );

@@ -18,7 +18,7 @@ export function useInsights() {
                 if (!cancelled) setInsights(result);
             })
             .catch((err) => {
-                console.error("[NexoGestão] Erro ao gerar insights:", err);
+                console.error("[TLGestão] Erro ao gerar insights:", err);
                 if (!cancelled) setError("Não foi possível gerar os insights agora.");
             })
             .finally(() => {

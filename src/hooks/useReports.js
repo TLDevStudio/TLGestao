@@ -28,7 +28,7 @@ export function useReports({ period, customStart, customEnd }) {
             ]);
             setData({ financial, clients, services, products, range: { start, end } });
         } catch (err) {
-            console.error("[NexoGestão] Erro ao gerar relatórios:", err);
+            console.error("[TLGestão] Erro ao gerar relatórios:", err);
             setError("Não foi possível carregar os relatórios.");
         } finally {
             setLoading(false);

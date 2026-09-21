@@ -25,7 +25,7 @@ export function useOnboarding() {
             try {
                 await dismissOnboarding(user.uid);
             } catch (err) {
-                console.error("[NexoGestão] Erro ao ocultar onboarding:", err);
+                console.error("[TLGestão] Erro ao ocultar onboarding:", err);
             }
         }
     };
