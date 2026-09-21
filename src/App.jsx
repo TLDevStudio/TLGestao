@@ -33,7 +33,7 @@ import AdminSecurity from "./pages/admin/AdminSecurity";
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <AuthProvider>
         <ThemeProvider>
           <ToastProvider>

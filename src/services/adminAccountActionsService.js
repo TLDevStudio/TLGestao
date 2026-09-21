@@ -13,6 +13,7 @@ import {
 import { db } from "../firebase/config";
 import { COLLECTIONS } from "../firebase/collections";
 import { ACCOUNT_STATUS } from "../utils/accountStatus";
+import { createNotification } from "./notificationService";
 
 async function logAdminAction({ adminEmail, business, action, description }) {
     await addDoc(collection(db, COLLECTIONS.ADMIN_LOGS), {
@@ -36,6 +37,11 @@ export async function releaseAccount(business, adminEmail) {
         action: "account_released",
         description: `Acesso liberado para "${business.businessName || business.email}"`,
     });
+    await createNotification(business.id, {
+        type: "account_released",
+        title: "🎉 Sua conta foi liberada!",
+        message: "Agora você já pode utilizar todos os recursos do TLGestão.",
+    });
 }
 
 export async function blockAccount(business, reason, adminEmail) {
@@ -51,6 +57,13 @@ export async function blockAccount(business, reason, adminEmail) {
             ? `Conta "${business.businessName || business.email}" bloqueada — motivo: ${reason}`
             : `Conta "${business.businessName || business.email}" bloqueada`,
     });
+    await createNotification(business.id, {
+        type: "account_blocked",
+        title: "⚠️ Sua conta foi bloqueada.",
+        message: reason
+            ? `Motivo: ${reason}. Entre em contato com o administrador para mais informações.`
+            : "Entre em contato com o administrador para mais informações.",
+    });
 }
 
 export async function deactivateAccount(business, adminEmail) {
@@ -64,6 +77,11 @@ export async function deactivateAccount(business, adminEmail) {
         action: "account_deactivated",
         description: `Conta "${business.businessName || business.email}" desativada`,
     });
+    await createNotification(business.id, {
+        type: "account_deactivated",
+        title: "Sua conta foi desativada.",
+        message: "Entre em contato com o administrador caso precise reativar seu acesso.",
+    });
 }
 
 export async function reactivateAccount(business, adminEmail) {
@@ -76,6 +94,11 @@ export async function reactivateAccount(business, adminEmail) {
         business,
         action: "account_reactivated",
         description: `Conta "${business.businessName || business.email}" reativada`,
+    });
+    await createNotification(business.id, {
+        type: "account_reactivated",
+        title: "🎉 Sua conta foi reativada.",
+        message: "Você já pode acessar o TLGestão normalmente novamente.",
     });
 }
 

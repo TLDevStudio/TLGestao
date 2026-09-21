@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>TLGestão</title>
+    <script type="text/javascript">
+        // Single Page Apps for GitHub Pages
+        // https://github.com/rafgraph/spa-github-pages
+        //
+        // O GitHub Pages não sabe que rotas como /TLGestao/admin/dashboard
+        // são internas do React Router — ele tenta achar um arquivo real
+        // nesse caminho, não encontra, e serve este 404.html. Este script
+        // reescreve a URL como uma query string e manda de volta pro
+        // index.html, que devolve a rota certa pro React Router.
+        //
+        // pathSegmentsToKeep = 1 porque o site fica em
+        // https://tldevstudio.github.io/TLGestao/ (1 segmento: TLGestao).
+        var pathSegmentsToKeep = 1;
+
+        var l = window.location;
+        l.replace(
+            l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+            l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+            l.pathname.slice(1 + pathSegmentsToKeep).split('/').join('/').replace(/&/g, '~and~') +
+            (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+            l.hash
+        );
+    </script>
+</head>
+
+<body></body>
+
+</html>
