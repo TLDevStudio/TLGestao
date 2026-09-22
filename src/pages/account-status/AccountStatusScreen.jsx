@@ -30,6 +30,10 @@ const BADGE_TONES = {
  * Tela genérica usada por PendingAccount, BlockedAccount e InactiveAccount.
  * Mantém uma única estrutura visual — cada tela específica só passa
  * título, mensagem e tom.
+ *
+ * `children` (opcional): slot extra renderizado entre o card de
+ * informações da empresa e o botão "Sair" — usado, por exemplo, pelo
+ * PendingAccount para reforçar "fale no WhatsApp pra liberar seu acesso".
  */
 export default function AccountStatusScreen({
     icon,
@@ -38,6 +42,7 @@ export default function AccountStatusScreen({
     message,
     statusLabel,
     showBusinessInfo = true,
+    children,
 }) {
     const { business } = useAuth();
     const navigate = useNavigate();
@@ -81,6 +86,8 @@ export default function AccountStatusScreen({
                         )}
                     </div>
                 )}
+
+                {children && <div className="mt-6">{children}</div>}
 
                 <Button
                     variant="outline"

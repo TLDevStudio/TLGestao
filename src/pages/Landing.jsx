@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 // ⚠️ Ajuste o caminho abaixo se a sua pasta de componentes for diferente
 import Reveal from "../components/landing/Reveal";
+import PlansSection from "../components/landing/PlansSection";
 
 // A cena 3D (Three.js) só é baixada quando a landing abre — não pesa no resto do sistema.
 const Hero3D = lazy(() => import("../components/landing/Hero3D"));
@@ -154,6 +155,9 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Planos */}
+      <PlansSection />
+
       {/* Depoimentos (demonstração) 
       <section className="mx-auto max-w-5xl px-6 pb-16">
         <p className="mb-4 text-center text-xs font-medium uppercase tracking-wide text-ink-soft">
@@ -201,7 +205,15 @@ export default function Landing() {
       </section>
 
       <footer className="border-t border-line px-6 py-8 text-center text-xs text-ink-soft">
-        © {new Date().getFullYear()} TLGestão — Seu negócio organizado em um só lugar.
+        <p>© {new Date().getFullYear()} TLGestão — Seu negócio organizado em um só lugar.</p>
+        <div className="mt-2.5 flex items-center justify-center gap-4">
+          <Link to="/termos" className="link-fx hover:text-ink">
+            Termos de Uso
+          </Link>
+          <Link to="/privacidade" className="link-fx hover:text-ink">
+            Política de Privacidade
+          </Link>
+        </div>
       </footer>
     </div>
   );

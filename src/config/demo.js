@@ -15,5 +15,5 @@ export const DEMO_CONFIG = {
     // Preenchido depois de criar a conta demo (ver passo a passo da Fase 4).
     // Usado nas próximas fases para identificar a conta demo e aplicar
     // proteções especiais a ela (Fase 5).
-    uid: "wZfG5vYaioed5sRNPJ3pd2lLG7h1",
+    uid: "l8Ktm44mLcS3YKBG0OejAoAxFtu1",
 };

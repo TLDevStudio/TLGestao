@@ -1032,3 +1032,238 @@ label {
     background-size: 100% 1.5px;
   }
 }
+
+/* ============================================================================
+   FINANCEIRO — RESPONSIVIDADE MOBILE
+   ============================================================================ */
+
+.financeiro-page {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Tudo dentro da página pode encolher */
+.financeiro-page>* {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ============================================================================
+   FILTROS
+   ============================================================================ */
+
+@media (max-width: 767px) {
+  .financeiro-page {
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .financeiro-page>div:first-child {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Campos dos filtros */
+  .financeiro-page>div:first-child>div:first-child {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .financeiro-page>div:first-child select,
+  .financeiro-page>div:first-child input {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* Botão Novo lançamento */
+  .financeiro-page>div:first-child>button {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  /* ==========================================================================
+     CARDS DE RESUMO
+     ========================================================================== */
+
+  .financeiro-page .grid {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /*
+   * Dois cards por linha no celular.
+   * Cada coluna pode realmente encolher.
+   */
+  .financeiro-page .grid.grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .financeiro-page .grid.grid-cols-2>* {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Conteúdo dos cards */
+  .financeiro-page .grid.grid-cols-2>* p {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  /* Valores */
+  .financeiro-page .grid.grid-cols-2>* p:last-child {
+    font-size: 1.15rem;
+    line-height: 1.2;
+  }
+
+  /* ==========================================================================
+     DESPESAS POR CATEGORIA
+     ========================================================================== */
+
+  .financeiro-page .rounded-2xl {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .financeiro-page .rounded-2xl>* {
+    min-width: 0;
+  }
+
+  /* Texto das categorias */
+  .financeiro-page .rounded-2xl span {
+    min-width: 0;
+  }
+
+  /* ==========================================================================
+     TABELA
+     ========================================================================== */
+
+  .financeiro-page table {
+    width: 100%;
+    min-width: 650px;
+  }
+
+  /*
+   * O container da tabela recebe rolagem horizontal,
+   * sem aumentar a largura da página.
+   */
+  .financeiro-page :has(> table) {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+  }
+
+  .financeiro-page table th,
+  .financeiro-page table td {
+    white-space: nowrap;
+  }
+
+  /* ==========================================================================
+     BOTÕES DA TABELA
+     ========================================================================== */
+
+  .financeiro-page td button {
+    flex-shrink: 0;
+  }
+}
+
+/* ============================================================================
+   CELULARES PEQUENOS
+   ============================================================================ */
+
+@media (max-width: 480px) {
+
+  .financeiro-page {
+    gap: 16px;
+  }
+
+  /* Cards um pouco mais compactos */
+  .financeiro-page .grid.grid-cols-2 {
+    gap: 8px;
+  }
+
+  .financeiro-page .grid.grid-cols-2>* {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .financeiro-page .grid.grid-cols-2>* p:first-child {
+    font-size: 13px;
+  }
+
+  .financeiro-page .grid.grid-cols-2>* p:last-child {
+    font-size: 1rem;
+  }
+
+  /* Despesas por categoria */
+  .financeiro-page .rounded-2xl {
+    padding: 16px;
+  }
+}
+
+/* ============================================================================
+   CELULARES MUITO PEQUENOS
+   ============================================================================ */
+
+@media (max-width: 380px) {
+
+  /*
+   * Em telas realmente estreitas, um card por linha.
+   * Isso evita números e textos espremidos.
+   */
+  .financeiro-page .grid.grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .financeiro-page .grid.grid-cols-2>* {
+    padding: 15px;
+  }
+
+  .financeiro-page .grid.grid-cols-2>* p:last-child {
+    font-size: 1.15rem;
+  }
+}
+
+/* ============================================================================
+   SEGURANÇA CONTRA OVERFLOW
+   ============================================================================ */
+
+@media (max-width: 767px) {
+
+  .financeiro-page,
+  .financeiro-page * {
+    box-sizing: border-box;
+  }
+
+  .financeiro-page img,
+  .financeiro-page svg,
+  .financeiro-page canvas {
+    max-width: 100%;
+  }
+
+  .financeiro-page input,
+  .financeiro-page select,
+  .financeiro-page textarea,
+  .financeiro-page button {
+    max-width: 100%;
+  }
+}

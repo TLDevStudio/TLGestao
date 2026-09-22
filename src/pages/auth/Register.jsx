@@ -54,8 +54,8 @@ export default function Register() {
     setLoading(true);
     try {
       await registerBusiness(form);
-      // registerBusiness grava accountStatus "pending" (Fase 1). O
-      // AccountStatusGuard (Fase 2) vai mostrar a tela de aguardando
+      // registerBusiness grava accountStatus "pending". O
+      // AccountStatusGuard vai mostrar a tela de aguardando
       // liberação automaticamente ao navegar para /app/dashboard.
       toast.success("Conta criada! Acompanhe abaixo o status da liberação do seu acesso.");
       navigate("/app/dashboard", { replace: true });

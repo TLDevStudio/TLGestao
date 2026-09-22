@@ -5,8 +5,12 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import PrivateRoute from "./routes/PrivateRoute";
 import AppLayout from "./layouts/AppLayout";
 import AuthLayout from "./layouts/AuthLayout";
+import ErrorBoundary from "./components/ErrorBoundary";
+import NotFound from "./pages/NotFound";
 
 import Landing from "./pages/Landing";
+import Termos from "./pages/legal/Termos";
+import Privacidade from "./pages/legal/Privacidade";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ForgotPassword from "./pages/auth/ForgotPassword";
@@ -33,67 +37,72 @@ import AdminSecurity from "./pages/admin/AdminSecurity";
 
 export default function App() {
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <AuthProvider>
-        <ThemeProvider>
-          <ToastProvider>
-            <Routes>
-              {/* Pública */}
-              <Route path="/" element={<Landing />} />
+    <ErrorBoundary>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <AuthProvider>
+          <ThemeProvider>
+            <ToastProvider>
+              <Routes>
+                {/* Pública */}
+                <Route path="/" element={<Landing />} />
+                <Route path="/termos" element={<Termos />} />
+                <Route path="/privacidade" element={<Privacidade />} />
 
-              {/* Autenticação */}
-              <Route element={<AuthLayout />}>
-                <Route path="/entrar" element={<Login />} />
-                <Route path="/criar-conta" element={<Register />} />
-                <Route path="/recuperar-senha" element={<ForgotPassword />} />
-              </Route>
+                {/* Autenticação */}
+                <Route element={<AuthLayout />}>
+                  <Route path="/entrar" element={<Login />} />
+                  <Route path="/criar-conta" element={<Register />} />
+                  <Route path="/recuperar-senha" element={<ForgotPassword />} />
+                </Route>
 
-              {/* Área logada */}
-              <Route
-                path="/app"
-                element={
-                  <PrivateRoute>
-                    <AccountStatusGuard>
-                      <AppLayout />
-                    </AccountStatusGuard>
-                  </PrivateRoute>
-                }
-              >
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="clientes" element={<Clientes />} />
-                <Route path="clientes/:id" element={<ClienteDetalhes />} />
-                <Route path="agendamentos" element={<Agendamentos />} />
-                <Route path="servicos" element={<Servicos />} />
-                <Route path="produtos" element={<Produtos />} />
-                <Route path="vendas" element={<Vendas />} />
-                <Route path="financeiro" element={<Financeiro />} />
-                <Route path="relatorios" element={<Relatorios />} />
-                <Route path="historico" element={<Historico />} />
-                <Route path="configuracoes" element={<Configuracoes />} />
-              </Route>
+                {/* Área logada */}
+                <Route
+                  path="/app"
+                  element={
+                    <PrivateRoute>
+                      <AccountStatusGuard>
+                        <AppLayout />
+                      </AccountStatusGuard>
+                    </PrivateRoute>
+                  }
+                >
+                  <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="clientes" element={<Clientes />} />
+                  <Route path="clientes/:id" element={<ClienteDetalhes />} />
+                  <Route path="agendamentos" element={<Agendamentos />} />
+                  <Route path="servicos" element={<Servicos />} />
+                  <Route path="produtos" element={<Produtos />} />
+                  <Route path="vendas" element={<Vendas />} />
+                  <Route path="financeiro" element={<Financeiro />} />
+                  <Route path="relatorios" element={<Relatorios />} />
+                  <Route path="historico" element={<Historico />} />
+                  <Route path="configuracoes" element={<Configuracoes />} />
+                </Route>
 
-              {/* Painel administrativo — separado da área do cliente */}
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route
-                path="/admin"
-                element={
-                  <AdminGuard>
-                    <AdminLayout />
-                  </AdminGuard>
-                }
-              >
-                <Route index element={<Navigate to="dashboard" replace />} />
-                <Route path="dashboard" element={<AdminDashboard />} />
-                <Route path="contas" element={<AdminAccounts />} />
-                <Route path="logs" element={<AdminLogs />} />
-                <Route path="logs" element={<AdminLogs />} />
-                <Route path="seguranca" element={<AdminSecurity />} />
-              </Route>
+                {/* Painel administrativo — separado da área do cliente */}
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route
+                  path="/admin"
+                  element={
+                    <AdminGuard>
+                      <AdminLayout />
+                    </AdminGuard>
+                  }
+                >
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route path="dashboard" element={<AdminDashboard />} />
+                  <Route path="contas" element={<AdminAccounts />} />
+                  <Route path="logs" element={<AdminLogs />} />
+                  <Route path="seguranca" element={<AdminSecurity />} />
+                </Route>
 
-            </Routes>
-          </ToastProvider>
-        </ThemeProvider>
-      </AuthProvider>
-    </BrowserRouter>
+                {/* Qualquer rota não mapeada cai aqui, em vez de tela em branco */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </ToastProvider>
+          </ThemeProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }

@@ -91,7 +91,7 @@ export default function Financeiro() {
     };
 
     return (
-        <div className="space-y-5">
+        <div className="financeiro-page space-y-5">
             {/* Filtros */}
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
                 <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">

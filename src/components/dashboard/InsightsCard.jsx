@@ -43,7 +43,7 @@ export default function InsightsCard() {
 
             {!loading && !error && insights.length === 0 && (
                 <p className="text-sm text-ink-soft leading-relaxed">
-                    Assim que houver mais vendas, clientes e movimentações de estoque, o Nexo Insights vai
+                    Assim que houver mais vendas, clientes e movimentações de estoque, o TL Insights vai
                     começar a gerar análises automáticas sobre o seu negócio.
                 </p>
             )}

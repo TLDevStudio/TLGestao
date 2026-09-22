@@ -7,7 +7,7 @@ import {
 } from "./reportService";
 
 /**
- * Nexo Insights — análises automáticas do negócio.
+ * TL Insights — análises automáticas do negócio.
  *
  * Arquitetura pensada para evoluir: hoje as regras abaixo são puro JavaScript
  * (comparação de números, ordenação, filtros), sem custo de API e sem

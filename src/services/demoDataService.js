@@ -16,11 +16,11 @@ import { logActivity } from "./activityLogService";
 import { assertNotDemoAccount } from "../utils/demoGuard";
 
 const DEMO_CLIENTS = [
-    { name: "Ana Souza", phone: "(11) 98765-4321", email: "ana.souza@email.com" },
-    { name: "Carlos Lima", phone: "(11) 91234-5678", email: "carlos.lima@email.com" },
-    { name: "Beatriz Rocha", phone: "(11) 99887-6655", email: "beatriz.rocha@email.com" },
-    { name: "Diego Alves", phone: "(11) 98221-3344", email: "diego.alves@email.com" },
-    { name: "Fernanda Melo", phone: "(11) 97744-5566", email: "fernanda.melo@email.com" },
+    { name: "Ana Souza", phone: "(21) 91234-5678", email: "ana.souza@email.com" },
+    { name: "Carlos Lima", phone: "(21) 91234-5678", email: "carlos.lima@email.com" },
+    { name: "Beatriz Rocha", phone: "(21) 91234-5678", email: "beatriz.rocha@email.com" },
+    { name: "Diego Alves", phone: "(21) 91234-5678", email: "diego.alves@email.com" },
+    { name: "Fernanda Melo", phone: "(21) 91234-5678", email: "fernanda.melo@email.com" },
 ];
 
 const DEMO_SERVICES = [
