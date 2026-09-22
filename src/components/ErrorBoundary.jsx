@@ -1,11 +1,14 @@
 import { Component } from "react";
 import { AlertTriangle, RotateCcw } from "lucide-react";
 import Button from "./ui/Button";
+import { reportError } from "../lib/sentry";
 
 /**
  * Rede de segurança global: captura qualquer erro de renderização em
  * componentes React e mostra uma tela amigável em vez de uma página em
  * branco. Envolve toda a árvore de rotas em App.jsx.
+ *
+ * Também reporta o erro para o Sentry (Fase 4), quando configurado.
  *
  * Observação: ErrorBoundary só pode ser implementado como componente de
  * classe — React ainda não oferece um equivalente via Hooks.
@@ -21,9 +24,8 @@ export default class ErrorBoundary extends Component {
     }
 
     componentDidCatch(error, errorInfo) {
-        // Aqui é o ponto de integração com uma ferramenta de monitoramento
-        // de erros em produção (ex.: Sentry), prevista na Fase 4 do roteiro.
         console.error("[TLGestão] Erro não tratado capturado pelo ErrorBoundary:", error, errorInfo);
+        reportError(error, { componentStack: errorInfo?.componentStack });
     }
 
     handleReload = () => {
