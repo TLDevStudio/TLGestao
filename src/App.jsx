@@ -7,10 +7,9 @@ import AppLayout from "./layouts/AppLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import ErrorBoundary from "./components/ErrorBoundary";
 import NotFound from "./pages/NotFound";
+import RouteTracker from "./components/RouteTracker";
 
 import Landing from "./pages/Landing";
-import Termos from "./pages/legal/Termos";
-import Privacidade from "./pages/legal/Privacidade";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ForgotPassword from "./pages/auth/ForgotPassword";
@@ -42,11 +41,10 @@ export default function App() {
         <AuthProvider>
           <ThemeProvider>
             <ToastProvider>
+              <RouteTracker />
               <Routes>
                 {/* Pública */}
                 <Route path="/" element={<Landing />} />
-                <Route path="/termos" element={<Termos />} />
-                <Route path="/privacidade" element={<Privacidade />} />
 
                 {/* Autenticação */}
                 <Route element={<AuthLayout />}>

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /TLGestao/app/
+Disallow: /TLGestao/admin/
+
+Sitemap: https://tldevstudio.github.io/TLGestao/sitemap.xml

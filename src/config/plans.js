@@ -18,7 +18,7 @@ export const WHATSAPP_NUMBER = "5521975930204";
 export const PLANS = [
     {
         id: "profissional",
-        name: "Profissional",
+        name: "Plano Mensal",
         price: 49.9,
         priceLabel: "R$ 49,90",
         period: "/mês",

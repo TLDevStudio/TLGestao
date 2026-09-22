@@ -14,6 +14,7 @@ import { db } from "../firebase/config";
 import { COLLECTIONS } from "../firebase/collections";
 import { logActivity } from "./activityLogService";
 import { createNotification } from "./notificationService";
+import { computeSaleTotals, normalizeItem, willBeLowStock, formatBRL } from "./saleCalculations";
 
 export const PAYMENT_METHODS = {
     cash: "Dinheiro",
@@ -50,15 +51,15 @@ export function subscribeSales(businessId, onChange, onError) {
  *   4. registra a receita em transactions (alimenta o Financeiro)
  *   5. atualiza totalGasto / visitas / última visita do cliente
  * Se qualquer etapa falhar, nada é gravado — evita estoque furado ou venda pela metade.
+ *
+ * Os cálculos de valores (subtotal, desconto, total) ficam em
+ * saleCalculations.js, cobertos por testes automatizados.
  */
 export async function finalizeSale(businessId, { client, products, services, discount, paymentMethod }) {
     const batch = writeBatch(db);
     const now = Timestamp.now();
 
-    const productsTotal = products.reduce((acc, p) => acc + p.unitPrice * p.quantity, 0);
-    const servicesTotal = services.reduce((acc, s) => acc + s.unitPrice * s.quantity, 0);
-    const subtotal = productsTotal + servicesTotal;
-    const total = Math.max(subtotal - (Number(discount) || 0), 0);
+    const { subtotal, total } = computeSaleTotals({ products, services, discount });
 
     // 1. Venda
     const saleRef = doc(collection(db, COLLECTIONS.SALES));
@@ -138,9 +139,8 @@ export async function finalizeSale(businessId, { client, products, services, dis
 
     // Confere se algum produto vendido ficou com estoque baixo após a baixa.
     for (const product of products) {
-        if (product.maxStock === null || product.minStock === null) continue;
-        const newStock = product.maxStock - product.quantity;
-        if (newStock <= product.minStock) {
+        if (willBeLowStock(product)) {
+            const newStock = product.maxStock - product.quantity;
             await createNotification(businessId, {
                 type: "low_stock",
                 title: "Produto com estoque baixo",
@@ -150,19 +150,4 @@ export async function finalizeSale(businessId, { client, products, services, dis
     }
 
     return { saleId: saleRef.id, total };
-}
-
-function normalizeItem(item) {
-    return {
-        id: item.id,
-        name: item.name,
-        type: item.type,
-        unitPrice: item.unitPrice,
-        quantity: item.quantity,
-        total: item.unitPrice * item.quantity,
-    };
-}
-
-function formatBRL(value) {
-    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value || 0);
 }

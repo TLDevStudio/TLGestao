@@ -37,7 +37,7 @@ export default function AuthLayout() {
         </div>
 
         <p className="text-xs text-white/50">
-          © {new Date().getFullYear()} TLGestão. Feito para pequenos negócios.
+          © {new Date().getFullYear()} TLGestão. Seu negócio organizado em um só lugar.
         </p>
       </div>
 

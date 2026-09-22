@@ -17,6 +17,7 @@ import { COLLECTIONS } from "../firebase/collections";
 import { assertNotDemoAccount } from "../utils/demoGuard";
 import { logActivity } from "./activityLogService";
 import { createNotification } from "./notificationService";
+import { computeStockDelta, isLowStock } from "./stockCalculations";
 
 /** Escuta em tempo real a lista de produtos do negócio, ordenada por nome. */
 export function subscribeProducts(businessId, onChange, onError) {
@@ -118,9 +119,12 @@ export async function deleteProduct(businessId, productId, productName, photoUrl
 /**
  * Registra entrada ou saída de estoque de forma atômica (increment),
  * evitando condição de corrida quando várias pessoas mexem no estoque ao mesmo tempo.
+ *
+ * O cálculo do delta e a checagem de estoque baixo ficam em
+ * stockCalculations.js, cobertos por testes automatizados.
  */
 export async function adjustStock(businessId, product, { type, quantity, reason }) {
-    const delta = type === "in" ? Number(quantity) : -Number(quantity);
+    const delta = computeStockDelta({ type, quantity });
 
     await updateDoc(doc(db, COLLECTIONS.PRODUCTS, product.id), {
         stock: increment(delta),
@@ -135,7 +139,7 @@ export async function adjustStock(businessId, product, { type, quantity, reason 
     });
 
     const newStock = Number(product.stock) + delta;
-    if (type === "out" && newStock <= Number(product.minStock ?? 0)) {
+    if (type === "out" && isLowStock(newStock, product.minStock)) {
         await createNotification(businessId, {
             type: "low_stock",
             title: "Produto com estoque baixo",
