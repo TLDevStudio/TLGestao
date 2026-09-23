@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import LegalLayout, { LegalSection } from "../../components/legal/LegalLayout";
 
 const RESPONSAVEL = "Thiago de Lemos Ferreira";
@@ -60,7 +61,7 @@ export default function Termos() {
                 </ul>
                 <p>
                     Mais detalhes sobre como tratamos esses dados estão na{" "}
-                    <a href="/privacidade">Política de Privacidade</a>.
+                    <Link to="/privacidade" className="link-fx font-medium text-ink hover:text-pine-800">Política de Privacidade</Link>.
                 </p>
             </LegalSection>
 
