@@ -44,11 +44,6 @@ export function AuthProvider({ children }) {
     business,
     loading,
     isAuthenticated: !!user,
-    /**
-     * Força a releitura do usuário do Firebase Auth e atualiza o estado.
-     * Necessário porque updateProfile() (nome/foto) não dispara onAuthStateChanged,
-     * então sem isso o Header continuaria mostrando os dados antigos até um refresh.
-     */
     refreshUser: async () => {
       if (!auth.currentUser) return;
       await auth.currentUser.reload();

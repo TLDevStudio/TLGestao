@@ -14,7 +14,7 @@ const ADMIN_TITLES = {
  * Layout do painel administrativo — separado do AppLayout do cliente.
  * Não compartilha Sidebar/Header com a área do cliente de propósito:
  * são ambientes diferentes e não devem se misturar visualmente nem
- * estruturalmente (ver Fase 7, seção 13 do documento original).
+ * estruturalmente.
  */
 export default function AdminLayout() {
     const [sidebarOpen, setSidebarOpen] = useState(false);

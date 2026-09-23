@@ -3,16 +3,6 @@ import { AlertTriangle, RotateCcw } from "lucide-react";
 import Button from "./ui/Button";
 import { reportError } from "../lib/sentry";
 
-/**
- * Rede de segurança global: captura qualquer erro de renderização em
- * componentes React e mostra uma tela amigável em vez de uma página em
- * branco. Envolve toda a árvore de rotas em App.jsx.
- *
- * Também reporta o erro para o Sentry (Fase 4), quando configurado.
- *
- * Observação: ErrorBoundary só pode ser implementado como componente de
- * classe — React ainda não oferece um equivalente via Hooks.
- */
 export default class ErrorBoundary extends Component {
     constructor(props) {
         super(props);

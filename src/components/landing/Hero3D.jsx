@@ -214,9 +214,7 @@ function buildChart(mats) {
     return { object: holder, bars, line, arrow };
 }
 
-/* ------------------------------------------------------------------ */
-/* Componente                                                          */
-/* ------------------------------------------------------------------ */
+/* Componente */
 
 export default function Hero3D() {
     const boxRef = useRef(null);
@@ -231,7 +229,7 @@ export default function Hero3D() {
         const wideMQ = window.matchMedia("(min-width: 80rem)"); // = breakpoint xl do Tailwind
         const isTouch = window.matchMedia("(pointer: coarse)").matches;
 
-        /* ---------- Renderer ---------- */
+        /* Renderer */
         let renderer;
         try {
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -249,7 +247,7 @@ export default function Hero3D() {
         canvas.style.cssText = "display:block;width:100%;height:100%;";
         box.appendChild(canvas);
 
-        /* ---------- Cena, câmera, luz ---------- */
+        /* Cena, câmera, luz */
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(32, 1, 1, 60);
         camera.position.set(0, 0, 13);

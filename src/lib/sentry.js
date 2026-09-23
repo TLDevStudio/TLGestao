@@ -1,15 +1,5 @@
 import * as Sentry from "@sentry/react";
 
-/**
- * Monitoramento de erros em produção (plano Free do Sentry — sentry.io).
- *
- * Fica desligado automaticamente quando:
- *  - não há VITE_SENTRY_DSN configurada (ex.: ambiente local de desenvolvimento)
- *  - está rodando em modo dev (import.meta.env.DEV)
- *
- * Isso evita "gastar" cota do plano gratuito com erros que só acontecem
- * na sua própria máquina enquanto você está codando.
- */
 const DSN = import.meta.env.VITE_SENTRY_DSN;
 const ENABLED = Boolean(DSN) && import.meta.env.PROD;
 

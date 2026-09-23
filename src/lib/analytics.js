@@ -1,15 +1,3 @@
-/**
- * Analytics — TLGestão (Google Analytics 4, plano 100% gratuito).
- *
- * Mesmo padrão do src/lib/sentry.js: fica desligado automaticamente
- * quando não há VITE_GA_MEASUREMENT_ID configurada, ou em desenvolvimento
- * (import.meta.env.DEV) — assim os seus próprios acessos testando o
- * sistema não poluem as métricas reais de uso.
- *
- * Só rastreia visitas ao site público (Landing, Login, Cadastro).
- * Não é chamado dentro da área logada — isso evita registrar dados de
- * navegação dos seus clientes dentro do próprio sistema deles.
- */
 const MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
 const ENABLED = Boolean(MEASUREMENT_ID) && import.meta.env.PROD;
 
@@ -28,7 +16,6 @@ export function initAnalytics() {
 
     window.dataLayer = window.dataLayer || [];
     function gtag() {
-        // eslint-disable-next-line prefer-rest-params
         window.dataLayer.push(arguments);
     }
     window.gtag = gtag;

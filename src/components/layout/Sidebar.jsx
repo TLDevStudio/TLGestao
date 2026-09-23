@@ -34,13 +34,6 @@ export default function Sidebar({ open, onClose }) {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    // Navega para a Landing ANTES de encerrar a sessão. Se fizéssemos
-    // ao contrário, o PrivateRoute detecta a troca de estado de auth
-    // (via onAuthStateChanged) e pode redirecionar para "/entrar" antes
-    // do nosso navigate("/") ser processado — uma corrida entre dois
-    // redirecionamentos que, dependendo do timing, deixava a pessoa no
-    // login em vez da Landing Page. Saindo primeiro da rota protegida,
-    // esse redirecionamento concorrente nunca chega a disparar.
     navigate("/", { replace: true });
     try {
       await logout();

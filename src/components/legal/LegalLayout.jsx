@@ -1,13 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
-/**
- * Layout compartilhado pelas páginas institucionais (Termos de Uso,
- * Política de Privacidade, e futuras páginas do tipo).
- *
- * Reaproveita o mesmo cabeçalho/rodapé "visual" da Landing pra não
- * parecer uma página fora do app.
- */
 export default function LegalLayout({ title, updatedAt, children }) {
     return (
         <div className="min-h-screen bg-paper">

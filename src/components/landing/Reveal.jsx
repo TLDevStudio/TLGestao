@@ -1,24 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 
-/**
- * <Reveal> — faz o elemento aparecer suavemente quando entra na tela.
- *
- * - Funciona ao rolar para BAIXO e para CIMA: o elemento sempre "chega" do
- *   lado de onde você está vindo (de baixo ao descer, de cima ao subir).
- * - Usa UM único IntersectionObserver para a página inteira (leve mesmo com
- *   dezenas de elementos).
- * - Respeita "reduzir movimento" do sistema operacional.
- *
- * Props:
- *   as        tag HTML a renderizar ("div" por padrão)
- *   delay     atraso em ms (use para escalonar itens de uma lista)
- *   variant   "up" (sobe + aparece) | "fade" (só aparece) | "scale" (sobe + cresce)
- *   distance  distância do deslocamento em px (36 por padrão)
- *   once      true = anima só na primeira vez; false = repete ao rolar
- *
- * As transições ficam no index.css (classe .reveal).
- */
-
 const listeners = new WeakMap();
 let sharedObserver = null;
 
@@ -29,10 +10,7 @@ function getObserver() {
                 entries.forEach((entry) => listeners.get(entry.target)?.(entry));
             },
             {
-                // 0 e 0.1: dois "gatilhos" evitam ficar piscando quando o elemento
-                // está exatamente na borda da tela.
                 threshold: [0, 0.1],
-                // Dispara um pouco depois de entrar, para o efeito ser percebido.
                 rootMargin: "0px 0px -8% 0px",
             }
         );
@@ -56,7 +34,6 @@ export default function Reveal({
     ...rest
 }) {
     const ref = useRef(null);
-    // "below" = escondido abaixo da tela | "above" = escondido acima | "visible"
     const [state, setState] = useState(() => (reducedMotion() ? "visible" : "below"));
 
     useEffect(() => {
@@ -78,8 +55,6 @@ export default function Reveal({
                     listeners.delete(el);
                 }
             } else if (!entry.isIntersecting && !once) {
-                // Saiu da tela: guarda de que lado saiu para a próxima entrada
-                // vir da direção certa.
                 setState(entry.boundingClientRect.top < 0 ? "above" : "below");
             }
         });

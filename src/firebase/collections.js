@@ -1,5 +1,3 @@
-// Nomes centralizados das coleções do Firestore.
-// Evita strings "mágicas" espalhadas pelo código (seção 17/22 do briefing).
 export const COLLECTIONS = {
   BUSINESSES: "businesses",
   CLIENTS: "clients",
