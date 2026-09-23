@@ -1,12 +1,12 @@
 import LegalLayout, { LegalSection } from "../../components/legal/LegalLayout";
 
-const RESPONSAVEL = "[Thiago de Lemos Ferreira]";
-const CONTATO_EMAIL = "[thiagodelemosferreira@gmail.com]";
-const FORO = "[Nova Iguaçu/RJ]";
+const RESPONSAVEL = "Thiago de Lemos Ferreira";
+const CONTATO_EMAIL = "thiagodelemosferreira@gmail.com";
+const FORO = "Nova Iguaçu/RJ";
 
 export default function Termos() {
     return (
-        <LegalLayout title="Termos de Uso" updatedAt="[22/09/2026]">
+        <LegalLayout title="Termos de Uso" updatedAt="22/09/2026">
             <LegalSection id="aceitacao" title="1. Aceitação dos termos">
                 <p>
                     Ao criar uma conta ou utilizar o TLGestão, você concorda integralmente com estes

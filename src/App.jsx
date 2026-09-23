@@ -34,6 +34,9 @@ import AdminAccounts from "./pages/admin/AdminAccounts";
 import AdminLogs from "./pages/admin/AdminLogs";
 import AdminSecurity from "./pages/admin/AdminSecurity";
 
+import Termos from "./pages/legal/Termos";
+import Privacidade from "./pages/legal/Privacidade";
+
 export default function App() {
   return (
     <ErrorBoundary>
@@ -45,6 +48,8 @@ export default function App() {
               <Routes>
                 {/* Pública */}
                 <Route path="/" element={<Landing />} />
+                <Route path="/termos" element={<Termos />} />
+                <Route path="/privacidade" element={<Privacidade />} />
 
                 {/* Autenticação */}
                 <Route element={<AuthLayout />}>

@@ -1,12 +1,12 @@
 import LegalLayout, { LegalSection } from "../../components/legal/LegalLayout";
 
-const RESPONSAVEL = "[Thiago Lemos]"
+const RESPONSAVEL = "Thiago Lemos"
 const CONTATO_EMAIL = "thiagodelemosferreira@gmail.com";
 const CONTATO_WHATSAPP = "(21) 97593-0204";
 
 export default function Privacidade() {
     return (
-        <LegalLayout title="Política de Privacidade" updatedAt="[22/09/2026]">
+        <LegalLayout title="Política de Privacidade" updatedAt="22/09/2026">
             <LegalSection id="introducao" title="1. Introdução">
                 <p>
                     Esta Política de Privacidade explica como o TLGestão coleta, usa, armazena e
