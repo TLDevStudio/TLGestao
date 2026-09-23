@@ -69,7 +69,7 @@ export default function ForgotPassword() {
           <p className="rounded-lg bg-danger-100 px-3 py-2 text-sm text-danger">{error}</p>
         )}
 
-        <Button type="submit" className="w-full" loading={loading} size="lg">
+        <Button type="submit" className="btn-fx btn-pine w-full" loading={loading} size="lg">
           Enviar link de recuperação
         </Button>
       </form>

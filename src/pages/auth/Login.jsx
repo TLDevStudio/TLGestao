@@ -90,7 +90,7 @@ export default function Login() {
             <div className="text-right">
               <Link
                 to="/recuperar-senha"
-                className="text-xs font-medium text-pine-800 hover:underline"
+                className="link-fx text-xs font-medium text-pine-800 hover:none"
               >
                 Esqueci minha senha
               </Link>

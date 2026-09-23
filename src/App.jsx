@@ -8,6 +8,8 @@ import AuthLayout from "./layouts/AuthLayout";
 import ErrorBoundary from "./components/ErrorBoundary";
 import NotFound from "./pages/NotFound";
 import RouteTracker from "./components/RouteTracker";
+import ScrollToTop from "./components/ScrollToTop";
+import CookieConsent from "./components/CookieConsent";
 
 import Landing from "./pages/Landing";
 import Termos from "./pages/legal/Termos";
@@ -44,6 +46,8 @@ export default function App() {
           <ThemeProvider>
             <ToastProvider>
               <RouteTracker />
+              <ScrollToTop />
+              <CookieConsent />
               <Routes>
                 {/* Pública */}
                 <Route path="/" element={<Landing />} />

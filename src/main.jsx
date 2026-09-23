@@ -4,9 +4,13 @@ import "./styles/index.css";
 import App from "./App.jsx";
 import { initSentry } from "./lib/sentry";
 import { initAnalytics } from "./lib/analytics";
+import { getCookieConsent } from "./lib/cookieConsent";
 
 initSentry();
-initAnalytics();
+
+if (getCookieConsent()?.analytics) {
+  initAnalytics();
+}
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
