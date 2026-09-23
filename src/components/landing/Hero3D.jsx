@@ -3,27 +3,6 @@ import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 
-/**
- * Hero3D — cena 3D do topo da landing (Three.js puro, sem react-three-fiber).
- *
- * Tema: gestão financeira.
- *   • Esquerda: pilhas de moedas + uma moeda "R$" girando.
- *   • Direita:  gráfico de barras crescente com seta de tendência.
- *
- * Layout:
- *   • Celular / tablet / notebook pequeno (< 1280px): a cena é um bloco em
- *     fluxo normal ACIMA do título, com as duas peças lado a lado.
- *   • Desktop (>= 1280px): a cena vira um fundo do hero e as duas peças
- *     ocupam o espaço vazio à esquerda e à direita do texto.
- *
- * Desempenho:
- *   • Carregado sob demanda (React.lazy) — não pesa o bundle inicial.
- *   • Pausa a renderização quando o hero sai da tela.
- *   • Pixel ratio limitado (1.5 no celular, 2 no desktop).
- *   • Com "reduzir movimento" ativo, desenha apenas um quadro estático.
- *   • Libera geometrias, materiais, texturas e o contexto WebGL ao desmontar.
- */
-
 /* Cores da marca (mesmos tokens do index.css) */
 const COLOR = {
     pine950: 0x0d1f1a,
@@ -51,9 +30,7 @@ const easeOutBack = (x) => {
     return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
 };
 
-/* ------------------------------------------------------------------ */
-/* Texturas                                                            */
-/* ------------------------------------------------------------------ */
+/* Texturas */
 
 /** "R$" gravado na face da moeda. Redesenha quando a fonte da marca carregar. */
 function makeGlyphTexture() {
@@ -102,9 +79,7 @@ function makeShadowTexture() {
     return texture;
 }
 
-/* ------------------------------------------------------------------ */
-/* Peças                                                               */
-/* ------------------------------------------------------------------ */
+/* Peças */
 
 function createMaterials(glyphTexture) {
     return {
@@ -143,11 +118,11 @@ function buildCoin(mats, { r = 0.7, h = 0.17 } = {}) {
     return coin;
 }
 
-/** Pilhas de moedas + moeda girando. */
-function buildTreasury(mats) {
+
+function criarPilhaDeMoedas(mats) {
     const group = new THREE.Group();
 
-    const stack = (count, x, z, r, seed) => {
+    const pilha = (count, x, z, r, seed) => {
         const h = 0.17 * (r / 0.7);
         for (let i = 0; i < count; i++) {
             const coin = buildCoin(mats, { r, h });

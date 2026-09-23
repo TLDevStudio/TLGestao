@@ -11,11 +11,10 @@ import {
   ArrowRight,
   Play,
 } from "lucide-react";
-// ⚠️ Ajuste o caminho abaixo se a sua pasta de componentes for diferente
+
 import Reveal from "../components/landing/Reveal";
 import PlansSection from "../components/landing/PlansSection";
 
-// A cena 3D (Three.js) só é baixada quando a landing abre — não pesa no resto do sistema.
 const Hero3D = lazy(() => import("../components/landing/Hero3D"));
 
 const FEATURES = [
@@ -30,9 +29,26 @@ const FEATURES = [
 const AUDIENCE = ["Barbearias", "Salões de beleza", "Oficinas", "Lojas", "Prestadores de serviço"];
 
 const FAQ = [
-  { q: "Preciso instalar algo?", a: "Não. O TLGestão funciona direto no navegador, em qualquer dispositivo." },
-  { q: "Meus dados ficam seguros?", a: "Sim. Cada conta acessa apenas os próprios dados, protegidos por autenticação e regras de segurança." },
-  { q: "Posso testar antes de cadastrar tudo?", a: "Sim, use o botão \"Ver demonstração\" para carregar dados de exemplo e explorar o sistema." },
+  {
+    q: "Preciso instalar algo?",
+    a: "Não. O TLGestão funciona direto no navegador, em qualquer dispositivo.",
+  },
+  {
+    q: "Meus dados ficam seguros?",
+    a: "Sim. Cada conta acessa apenas os próprios dados, protegidos por autenticação e regras de segurança.",
+  },
+  {
+    q: "Qual é a diferença entre os planos?",
+    a: "O sistema e as funcionalidades são os mesmos. A diferença está na configuração inicial: no Plano Mensal você configura sozinho; nos planos Pronto e Implantação Completa, nós fazemos parte ou toda a configuração para você.",
+  },
+  {
+    q: "O que é a taxa de implantação?",
+    a: "É um pagamento único pelo trabalho de configuração inicial do seu negócio. Depois disso, a mensalidade permanece em R$ 49,90.",
+  },
+  {
+    q: "Posso testar antes de cadastrar tudo?",
+    a: "Sim, use o botão \"Ver demonstração\" para carregar dados de exemplo e explorar o sistema.",
+  },
 ];
 
 export default function Landing() {
@@ -119,7 +135,6 @@ export default function Landing() {
           </Reveal>
           <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map(({ icon: Icon, title, desc }, i) => (
-              // O Reveal é o item da grade; o cartão (com hover) fica dentro dele
               <Reveal key={title} delay={(i % 3) * 90}>
                 <div className="h-full rounded-2xl bg-white/5 p-5 transition-colors duration-200 hover:bg-white/10">
                   <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/15">
@@ -165,12 +180,12 @@ export default function Landing() {
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
           {[
-            { name: "Zé, Barbearia do Zé", text: "Consigo ver o dia inteiro em um lugar só, sem precisar de caderno." },
-            { name: "Marina, Salão Bella", text: "O controle de estoque me avisa antes de faltar produto." },
+            { name:"" },
+            { name: "" },
           ].map((d) => (
             <div key={d.name} className="rounded-2xl border border-line bg-white p-5">
               <p className="text-sm text-ink">"{d.text}"</p>
-              <p className="mt-3 text-xs font-medium text-ink-soft">{d.name} · exemplo ilustrativo</p>
+              <p className="mt-3 text-xs font-medium text-ink-soft">{d.name}</p>
             </div>
           ))}
         </div>
@@ -199,7 +214,7 @@ export default function Landing() {
             to="/criar-conta"
             className="btn-fx btn-amber mt-6 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-6 py-3.5 text-sm font-semibold text-pine-950 hover:bg-amber-600"
           >
-            Criar conta gratuita <ArrowRight size={16} className="btn-arrow" />
+            Criar conta <ArrowRight size={16} className="btn-arrow" />
           </Link>
         </Reveal>
       </section>

@@ -1,10 +1,7 @@
 import { Construction } from "lucide-react";
 import EmptyState from "../components/ui/EmptyState";
 
-/**
- * Página temporária para módulos que ainda serão construídos
- * nas próximas etapas (seção 30 do briefing: entrega incremental).
- */
+/* Página temporária para módulos que ainda serão construídos. */
 export default function ComingSoon({ moduleName }) {
   return (
     <EmptyState

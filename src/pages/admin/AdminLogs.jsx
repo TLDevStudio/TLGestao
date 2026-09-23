@@ -24,7 +24,7 @@ function toDateSafe(value) {
     return value?.toDate ? value.toDate() : null;
 }
 
-/** Histórico permanente de ações administrativas — ver Fase 11. */
+/** Histórico permanente de ações administrativas */
 export default function AdminLogs() {
     const { logs, loading, error } = useAdminLogs();
 

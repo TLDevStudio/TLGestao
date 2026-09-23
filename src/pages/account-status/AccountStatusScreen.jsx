@@ -26,15 +26,6 @@ const BADGE_TONES = {
     error: "danger",
 };
 
-/**
- * Tela genérica usada por PendingAccount, BlockedAccount e InactiveAccount.
- * Mantém uma única estrutura visual — cada tela específica só passa
- * título, mensagem e tom.
- *
- * `children` (opcional): slot extra renderizado entre o card de
- * informações da empresa e o botão "Sair" — usado, por exemplo, pelo
- * PendingAccount para reforçar "fale no WhatsApp pra liberar seu acesso".
- */
 export default function AccountStatusScreen({
     icon,
     tone = "neutral",
@@ -49,9 +40,6 @@ export default function AccountStatusScreen({
     const Icon = icon || ICONS[tone] || ICONS.neutral;
 
     async function handleLogout() {
-        // Mesma ordem usada no Sidebar e em Configurações: navega antes de
-        // encerrar a sessão, para não disputar redirecionamento com o
-        // PrivateRoute/AccountStatusGuard.
         navigate("/", { replace: true });
         await logout();
     }

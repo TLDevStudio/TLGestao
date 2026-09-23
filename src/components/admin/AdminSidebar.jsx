@@ -10,19 +10,11 @@ const ADMIN_NAV_ITEMS = [
     { to: "/admin/seguranca", label: "Segurança", icon: ShieldAlert },
 ];
 
-/**
- * Sidebar exclusiva do painel administrativo. Não importa nada do
- * Sidebar do cliente e não aparece em nenhuma rota de /app/* — são
- * áreas completamente separadas visualmente, para não haver confusão
- * sobre em qual ambiente a pessoa está.
- */
 export default function AdminSidebar({ open, onClose }) {
     const toast = useToast();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
-        // Mesma ordem usada na área do cliente (Fase 6): navega antes de
-        // encerrar a sessão, para não disputar redirecionamento com o AdminGuard.
         navigate("/", { replace: true });
         try {
             await logout();

@@ -44,11 +44,7 @@ const STATUS_OPTIONS = [
     { value: "inactive", label: "Inativos" },
 ];
 
-/* ============================================================================
-   CONTROLE DE STATUS DO SERVIÇO
-   ============================================================================
-   Mantém a mesma função de ativar/desativar, alterando apenas a apresentação.
-   ============================================================================ */
+/* Controle de status de serviço */
 
 function ServiceStatusToggle({ service, onToggle }) {
     const isActive = service.active;
@@ -259,9 +255,7 @@ export default function Servicos() {
 
     return (
         <div className="space-y-5">
-            {/* =================================================================
-                BUSCA + FILTROS
-                ================================================================= */}
+            {/* busca + filtros */}
 
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                 <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -305,9 +299,7 @@ export default function Servicos() {
                 </Button>
             </div>
 
-            {/* =================================================================
-                ERRO
-                ================================================================= */}
+            {/* erro */}
 
             {error && (
                 <p className="rounded-xl bg-danger-100 px-4 py-3 text-sm text-danger">
@@ -315,9 +307,7 @@ export default function Servicos() {
                 </p>
             )}
 
-            {/* =================================================================
-                ESTADO SEM SERVIÇOS
-                ================================================================= */}
+            {/* estado sem serviços */}
 
             {hasNoServicesAtAll ? (
                 <EmptyState
@@ -335,9 +325,7 @@ export default function Servicos() {
                 />
             ) : (
                 <>
-                    {/* =========================================================
-                        MOBILE — LISTA DE CARTÕES
-                        ========================================================= */}
+                    {/* mobile - lista de cartões*/}
 
                     <div className="space-y-3 md:hidden">
                         {loading &&
@@ -375,9 +363,7 @@ export default function Servicos() {
                                         hover:shadow-md
                                     "
                                 >
-                                    {/* =================================================
-                                        NOME + CATEGORIA
-                                        ================================================= */}
+                                    {/* nome + categoria */}
 
                                     <div className="flex min-w-0 items-start justify-between gap-3">
                                         <div className="min-w-0 flex-1">
@@ -413,9 +399,7 @@ export default function Servicos() {
                                         </Badge>
                                     </div>
 
-                                    {/* =================================================
-                                        PREÇO + DURAÇÃO
-                                        ================================================= */}
+                                    {/* preço + duração */}
 
                                     <div className="mt-4 flex items-end justify-between gap-3">
                                         <div className="flex min-w-0 flex-col gap-1">
@@ -435,9 +419,7 @@ export default function Servicos() {
                                             </span>
                                         </div>
 
-                                        {/* =================================================
-                                            AÇÕES MOBILE
-                                            ================================================= */}
+                                        {/* ações mobile */}
 
                                         <div className="flex shrink-0 items-center gap-1.5">
                                             <ServiceStatusToggle
@@ -511,9 +493,7 @@ export default function Servicos() {
                             ))}
                     </div>
 
-                    {/* =========================================================
-                        DESKTOP — TABELA
-                        ========================================================= */}
+                    {/* desktop - tabela */}
 
                     <div className="hidden md:block">
                         <Table
@@ -631,9 +611,7 @@ export default function Servicos() {
                 </>
             )}
 
-            {/* =================================================================
-                MODAL DE SERVIÇO
-                ================================================================= */}
+            {/* modal de serviço */}
 
             <ServiceFormModal
                 open={modalOpen}
@@ -641,9 +619,7 @@ export default function Servicos() {
                 service={editingService}
             />
 
-            {/* =================================================================
-                CONFIRMAÇÃO DE EXCLUSÃO
-                ================================================================= */}
+            {/* confirmação de exclusão */}
 
             <ConfirmDialog
                 open={!!serviceToDelete}

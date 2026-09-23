@@ -5,15 +5,6 @@ import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import { loginWithEmail, translateAuthError } from "../../services/authService";
 
-/**
- * Login separado do painel administrativo. Não tem link para cadastro,
- * não tem link para a demonstração, e não aparece linkado em nenhum
- * lugar do site público ou da área do cliente — só quem sabe a URL
- * (/admin/login) chega aqui.
- *
- * A checagem real de "essa conta é admin mesmo?" acontece no
- * AdminGuard, depois do login — aqui só autentica no Firebase.
- */
 export default function AdminLogin() {
     const navigate = useNavigate();
     const location = useLocation();

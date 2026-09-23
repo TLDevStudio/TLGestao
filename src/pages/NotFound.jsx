@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import { Compass, ArrowLeft } from "lucide-react";
 import Button from "../components/ui/Button";
 
-/**
+/*
  * Página exibida quando nenhuma rota corresponde à URL acessada.
  * Cobre tanto o site público (/) quanto a área logada (/app/*).
- */
+*/
 export default function NotFound() {
     return (
         <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-paper px-6 text-center">

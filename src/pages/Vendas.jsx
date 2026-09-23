@@ -177,7 +177,7 @@ function SalesHistory({ sales, loading }) {
 
     return (
         <>
-            {/* ---------- MOBILE: lista de cartões ---------- */}
+            {/* MOBILE: lista de cartões */}
             <div className="space-y-3 md:hidden">
                 {sales.map((sale) => {
                     const itemCount = (sale.products?.length || 0) + (sale.services?.length || 0);
@@ -204,7 +204,7 @@ function SalesHistory({ sales, loading }) {
                 })}
             </div>
 
-            {/* ---------- DESKTOP: tabela ---------- */}
+            {/* DESKTOP: tabela */}
             <div className="hidden md:block">
                 <Table columns={HISTORY_COLUMNS}>
                     {sales.map((sale) => {

@@ -378,8 +378,6 @@ function SecuritySection() {
     const [sendingReset, setSendingReset] = useState(false);
 
     const handleLogout = async () => {
-        // Mesma ordem do Sidebar: navega antes de encerrar a sessão,
-        // para não disputar redirecionamento com o PrivateRoute.
         navigate("/", { replace: true });
         try {
             await logout();

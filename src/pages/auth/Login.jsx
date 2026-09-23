@@ -18,9 +18,6 @@ export default function Login() {
 
   const from = location.state?.from?.pathname || "/app/dashboard";
 
-  // Chega pelo botão "Ver demonstração" (?demo=1): pré-preenche o
-  // formulário com as credenciais da conta demo fixa, para o visitante
-  // só precisar clicar em "Entrar na demonstração".
   useEffect(() => {
     if (isDemoLogin) {
       setForm({ email: DEMO_CONFIG.email, password: DEMO_CONFIG.password });

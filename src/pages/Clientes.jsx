@@ -110,7 +110,7 @@ export default function Clientes() {
                 />
             ) : (
                 <>
-                    {/* ---------- MOBILE: lista de cartões ---------- */}
+                    {/* MOBILE: lista de cartões */}
                     <div className="space-y-3 md:hidden">
                         {loading &&
                             Array.from({ length: 4 }).map((_, i) => (
@@ -190,7 +190,7 @@ export default function Clientes() {
                             ))}
                     </div>
 
-                    {/* ---------- DESKTOP: tabela ---------- */}
+                    {/* DESKTOP: tabela */}
                     <div className="hidden md:block">
                         <Table
                             columns={COLUMNS}
