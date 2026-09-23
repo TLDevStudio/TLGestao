@@ -195,7 +195,7 @@ function DayView({ day, appointments, onEdit, onDelete, onCreate }) {
                 title="Nenhum agendamento para este dia."
                 description="Que tal criar o primeiro agendamento?"
                 action={
-                    <Button icon={Plus} onClick={onCreate}>
+                    <Button className="btn-fx btn-pine rounded-xl w-full sm:w-auto sm:shrink-0" icon={Plus} onClick={onCreate}>
                         Novo agendamento
                     </Button>
                 }

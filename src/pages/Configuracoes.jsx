@@ -185,7 +185,7 @@ function CompanySection() {
             <Input id="cnpj" name="cnpj" label="CNPJ (opcional)" icon={IdCard} value={form.cnpj} onChange={handleChange} maxLength={18} />
 
             <div className="flex justify-end">
-                <Button type="submit" loading={saving}>Salvar alterações</Button>
+                <Button className="btn-fx btn-pine rounded-xl w-full sm:w-auto sm:shrink-0" type="submit" loading={saving}>Salvar alterações</Button>
             </div>
         </form>
     );
@@ -259,7 +259,7 @@ function ProfileSection() {
             </p>
 
             <div className="flex justify-end">
-                <Button type="submit" loading={saving}>
+                <Button className="btn-fx btn-pine rounded-xl w-full sm:w-auto sm:shrink-0" type="submit" loading={saving}>
                     Salvar alterações
                 </Button>
             </div>
@@ -359,7 +359,7 @@ function PreferencesSection() {
                 </p>
 
                 <div className="flex justify-end">
-                    <Button onClick={handleSave} loading={saving}>Salvar preferências</Button>
+                    <Button className="btn-fx btn-pine rounded-xl w-full sm:w-auto sm:shrink-0" onClick={handleSave} loading={saving}>Salvar preferências</Button>
                 </div>
             </div>
 

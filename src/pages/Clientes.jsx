@@ -103,7 +103,7 @@ export default function Clientes() {
                     title="Você ainda não possui clientes cadastrados."
                     description="Cadastre seu primeiro cliente para começar a acompanhar atendimentos, compras e histórico."
                     action={
-                        <Button icon={Plus} onClick={openCreateModal}>
+                        <Button className="btn-fx btn-pine rounded-xl w-full sm:w-auto sm:shrink-0" icon={Plus} onClick={openCreateModal}>
                             Cadastrar primeiro cliente
                         </Button>
                     }

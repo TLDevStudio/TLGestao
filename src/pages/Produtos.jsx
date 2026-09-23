@@ -144,7 +144,7 @@ export default function Produtos() {
                     title="Você ainda não possui produtos cadastrados."
                     description="Cadastre seus produtos para controlar estoque e usá-los nas vendas."
                     action={
-                        <Button icon={Plus} onClick={openCreateModal}>
+                        <Button className="btn-fx btn-pine rounded-xl w-full sm:w-auto sm:shrink-0" icon={Plus} onClick={openCreateModal}>
                             Cadastrar primeiro produto
                         </Button>
                     }

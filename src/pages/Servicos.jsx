@@ -316,6 +316,7 @@ export default function Servicos() {
                     description="Cadastre os serviços oferecidos pelo seu negócio para usá-los em agendamentos e vendas."
                     action={
                         <Button
+                            className="btn-fx btn-pine rounded-xl w-full sm:w-auto sm:shrink-0"
                             icon={Plus}
                             onClick={openCreateModal}
                         >

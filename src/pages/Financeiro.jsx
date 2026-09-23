@@ -209,7 +209,7 @@ export default function Financeiro() {
                     title="Nenhum lançamento neste período."
                     description="Registre despesas manualmente. As receitas das vendas entram aqui automaticamente."
                     action={
-                        <Button icon={Plus} onClick={openCreate}>
+                        <Button className="btn-fx btn-pine rounded-xl w-full sm:w-auto sm:shrink-0" icon={Plus} onClick={openCreate}>
                             Registrar lançamento
                         </Button>
                     }
