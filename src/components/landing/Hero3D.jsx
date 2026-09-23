@@ -119,10 +119,10 @@ function buildCoin(mats, { r = 0.7, h = 0.17 } = {}) {
 }
 
 
-function criarPilhaDeMoedas(mats) {
+function buildTreasury(mats) {
     const group = new THREE.Group();
 
-    const pilha = (count, x, z, r, seed) => {
+    const stack = (count, x, z, r, seed) => {
         const h = 0.17 * (r / 0.7);
         for (let i = 0; i < count; i++) {
             const coin = buildCoin(mats, { r, h });
