@@ -10,6 +10,8 @@ import NotFound from "./pages/NotFound";
 import RouteTracker from "./components/RouteTracker";
 
 import Landing from "./pages/Landing";
+import Termos from "./pages/legal/Termos";
+import Privacidade from "./pages/legal/Privacidade";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ForgotPassword from "./pages/auth/ForgotPassword";
@@ -33,9 +35,6 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminAccounts from "./pages/admin/AdminAccounts";
 import AdminLogs from "./pages/admin/AdminLogs";
 import AdminSecurity from "./pages/admin/AdminSecurity";
-
-import Termos from "./pages/legal/Termos";
-import Privacidade from "./pages/legal/Privacidade";
 
 export default function App() {
   return (

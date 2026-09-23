@@ -1,6 +1,6 @@
 import LegalLayout, { LegalSection } from "../../components/legal/LegalLayout";
 
-const RESPONSAVEL = "Thiago Lemos"
+const RESPONSAVEL = "Thiago de Lemos Ferreira";
 const CONTATO_EMAIL = "thiagodelemosferreira@gmail.com";
 const CONTATO_WHATSAPP = "(21) 97593-0204";
 
@@ -145,9 +145,17 @@ export default function Privacidade() {
 
             <LegalSection id="cookies" title="10. Cookies e armazenamento local">
                 <p>
-                    O TLGestão utiliza apenas o armazenamento local do navegador estritamente
-                    necessário para manter você conectado (sessão de autenticação). Não utilizamos
-                    cookies de rastreamento ou publicidade.
+                    O TLGestão utiliza o armazenamento local do navegador estritamente necessário
+                    para manter você conectado (sessão de autenticação).
+                </p>
+                <p>
+                    Além disso, utilizamos o <strong>Google Analytics</strong>, que usa cookies
+                    próprios para nos ajudar a entender, de forma agregada e anônima, como os
+                    visitantes usam nosso site (quais páginas acessam, de onde vieram). Esses
+                    cookies são usados apenas na parte pública do site (página inicial, cadastro e
+                    login) — não são usados dentro do sistema, na área logada onde você gerencia
+                    seu negócio. Não utilizamos cookies de publicidade nem compartilhamos esses
+                    dados para fins de anúncios.
                 </p>
             </LegalSection>
 
