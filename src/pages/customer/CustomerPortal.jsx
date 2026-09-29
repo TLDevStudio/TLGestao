@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
-import { ArrowLeft, CalendarCheck, CheckCircle2, Clock, MapPin, Phone } from "lucide-react";
+import { ArrowLeft, CalendarCheck, CheckCircle2, ChevronLeft, ChevronRight, Clock, MapPin, Phone } from "lucide-react";
 import { usePublicBusiness } from "../../hooks/usePublicBusiness";
 import { useAvailableSlots } from "../../hooks/useAvailableSlots";
 import { useCustomerAuth } from "../../hooks/useCustomerAuth";
@@ -56,11 +56,36 @@ export default function CustomerPortal() {
     const [confirming, setConfirming] = useState(false);
     const [successData, setSuccessData] = useState(null);
 
+    // Carrossel de dias: setas para quem usa mouse (desktop)
+    const daysScrollRef = useRef(null);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(false);
+
+    const updateScrollButtons = useCallback(() => {
+        const el = daysScrollRef.current;
+        if (!el) return;
+        setCanScrollLeft(el.scrollLeft > 4);
+        setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+    }, []);
+
+    function scrollDays(direction) {
+        const el = daysScrollRef.current;
+        if (!el) return;
+        // rola ~4 dias por clique
+        el.scrollBy({ left: direction * 4 * 76, behavior: "smooth" });
+    }
+
     const timezone = business?.timezone || "America/Sao_Paulo";
     const days = useMemo(
         () => (business ? generateDayList(timezone, business.onlineBooking?.maximumAdvanceDays) : []),
         [business, timezone]
     );
+
+    useEffect(() => {
+        updateScrollButtons();
+        window.addEventListener("resize", updateScrollButtons);
+        return () => window.removeEventListener("resize", updateScrollButtons);
+    }, [days, step, updateScrollButtons]);
 
     const { slots, loading: loadingSlots, error: slotsError } = useAvailableSlots({
         businessId: business?.id,
@@ -207,28 +232,75 @@ export default function CustomerPortal() {
                             {selectedService.price != null && ` · ${formatPrice(selectedService.price)}`}
                         </p>
 
-                        <h3 className="mt-5 text-sm font-semibold text-ink">Escolha o dia</h3>
-                        <div className="mt-2 flex gap-2 overflow-x-auto pb-2">
-                            {days.map((d) => (
-                                <button
-                                    key={d.dateStr}
-                                    onClick={() => {
-                                        setSelectedDate(d.dateStr);
-                                        setSelectedSlotISO(null);
-                                    }}
-                                    className={`flex min-w-[64px] flex-col items-center rounded-xl border px-3 py-2 text-xs transition ${selectedDate === d.dateStr
-                                            ? "border-pine-900 bg-pine-900 text-white"
-                                            : "border-line text-ink hover:border-pine-700"
-                                        }`}
-                                >
-                                    <span className="uppercase">{d.isToday ? "Hoje" : d.weekday}</span>
-                                    <span className="text-base font-semibold">{d.dayNumber}</span>
-                                    <span className="uppercase">{d.month}</span>
-                                </button>
-                            ))}
+                        <h3 className="mt-6 text-sm font-semibold text-ink">Escolha o dia</h3>
+                        {/* w-* + shrink-0 em vez de min-w-*: o index.css tem regras sem @layer
+                            (min-width:0 e font-size:inherit) que vencem os utilitários do Tailwind.
+                            Os tamanhos de fonte ficam nos <span> internos pelo mesmo motivo. */}
+                        <div className="mt-3 flex items-center gap-2">
+                            {/* Setas ficam FORA da lista (só no desktop). "invisible" mantém o espaço
+                                reservado para o layout não pular quando a seta some. */}
+                            <button
+                                type="button"
+                                onClick={() => scrollDays(-1)}
+                                aria-label="Dias anteriores"
+                                disabled={!canScrollLeft}
+                                className={`hidden h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line bg-surface text-ink transition hover:border-pine-700 hover:bg-paper-dim sm:flex ${canScrollLeft ? "" : "invisible"
+                                    }`}
+                            >
+                                <ChevronLeft size={18} />
+                            </button>
+                            <div
+                                ref={daysScrollRef}
+                                onScroll={updateScrollButtons}
+                                className="-mx-6 flex min-w-0 flex-1 snap-x gap-2 overflow-x-auto px-6 pb-3 sm:mx-0 sm:px-0"
+                                style={{ scrollbarWidth: "none" }}
+                            >
+                                {days.map((d) => {
+                                    const active = selectedDate === d.dateStr;
+                                    return (
+                                        <button
+                                            key={d.dateStr}
+                                            onClick={() => {
+                                                setSelectedDate(d.dateStr);
+                                                setSelectedSlotISO(null);
+                                            }}
+                                            className={`flex w-[68px] shrink-0 snap-start flex-col items-center gap-0.5 rounded-2xl border px-2 py-3 transition ${active
+                                                    ? "border-pine-900 bg-pine-900 text-white shadow-md shadow-pine-900/20"
+                                                    : "border-line bg-surface text-ink hover:border-pine-700 hover:bg-paper-dim"
+                                                }`}
+                                        >
+                                            <span
+                                                className={`text-[11px] font-semibold uppercase leading-none tracking-wide ${active ? "text-white/80" : d.isToday ? "text-amber-600" : "text-ink-soft"
+                                                    }`}
+                                            >
+                                                {d.isToday ? "Hoje" : d.weekday.replace(".", "")}
+                                            </span>
+                                            <span className="font-display text-xl font-semibold leading-tight">
+                                                {d.dayNumber}
+                                            </span>
+                                            <span
+                                                className={`text-[11px] uppercase leading-none ${active ? "text-white/80" : "text-ink-soft"
+                                                    }`}
+                                            >
+                                                {d.month.replace(".", "")}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => scrollDays(1)}
+                                aria-label="Próximos dias"
+                                disabled={!canScrollRight}
+                                className={`hidden h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line bg-surface text-ink transition hover:border-pine-700 hover:bg-paper-dim sm:flex ${canScrollRight ? "" : "invisible"
+                                    }`}
+                            >
+                                <ChevronRight size={18} />
+                            </button>
                         </div>
 
-                        <h3 className="mt-5 text-sm font-semibold text-ink">Escolha o horário</h3>
+                        <h3 className="mt-4 text-sm font-semibold text-ink">Escolha o horário</h3>
                         {loadingSlots ? (
                             <div className="mt-3 flex justify-center py-6">
                                 <Spinner />
@@ -238,14 +310,16 @@ export default function CustomerPortal() {
                         ) : slots.length === 0 ? (
                             <p className="mt-3 text-sm text-ink-soft">Nenhum horário disponível neste dia.</p>
                         ) : (
-                            <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-4">
+                            <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
                                 {slots.map((iso) => (
                                     <button
                                         key={iso}
                                         onClick={() => selectSlot(iso)}
-                                        className="rounded-lg border border-line px-2 py-2 text-sm font-medium text-ink transition hover:border-pine-900 hover:bg-pine-900 hover:text-white"
+                                        className="rounded-xl border border-line bg-surface px-2 py-2.5 text-ink transition hover:border-pine-900 hover:bg-pine-900 hover:text-white active:scale-95"
                                     >
-                                        {DateTime.fromISO(iso).setZone(timezone).toFormat("HH:mm")}
+                                        <span className="text-sm font-medium tabular-nums">
+                                            {DateTime.fromISO(iso).setZone(timezone).toFormat("HH:mm")}
+                                        </span>
                                     </button>
                                 ))}
                             </div>
