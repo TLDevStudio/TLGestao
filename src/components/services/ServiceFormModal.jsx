@@ -3,7 +3,7 @@ import Modal from "../ui/Modal";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import Switch from "../ui/Switch";
-import { Scissors, Tag, DollarSign, Clock, FileText } from "lucide-react";
+import { Scissors, Tag, DollarSign, Clock, FileText, Globe } from "lucide-react";
 import { maskCurrency, parseCurrencyInput } from "../../utils/masks";
 import { createService, updateService } from "../../services/serviceService";
 import { useAuth } from "../../contexts/AuthContext";
@@ -16,6 +16,7 @@ const emptyForm = {
     priceDisplay: "",
     duration: "30",
     active: true,
+    availableOnline: false,
 };
 
 export default function ServiceFormModal({ open, onClose, service }) {
@@ -38,6 +39,7 @@ export default function ServiceFormModal({ open, onClose, service }) {
                             ? service.price.toLocaleString("pt-BR", { minimumFractionDigits: 2 })
                             : "",
                         duration: String(service.duration ?? 30),
+                        availableOnline: service.availableOnline === true,
                     }
                     : emptyForm
             );
@@ -171,6 +173,19 @@ export default function ServiceFormModal({ open, onClose, service }) {
                     onChange={(checked) => setForm((f) => ({ ...f, active: checked }))}
                     label={form.active ? "Serviço ativo" : "Serviço inativo"}
                 />
+
+                <div className="rounded-xl border border-line bg-paper-dim/50 p-3.5">
+                    <Switch
+                        checked={form.availableOnline}
+                        onChange={(checked) => setForm((f) => ({ ...f, availableOnline: checked }))}
+                        label="Disponível para agendamento online"
+                    />
+                    <p className="mt-1.5 flex items-start gap-1.5 text-xs text-ink-soft">
+                        <Globe size={13} className="mt-0.5 shrink-0" />
+                        Quando ativado, este serviço aparece no link público de agendamento
+                        (Configurações → Agendamento Online). Serviços internos podem ficar desligados aqui.
+                    </p>
+                </div>
 
                 {error && (
                     <p className="rounded-lg bg-danger-100 px-3 py-2 text-sm text-danger">{error}</p>

@@ -1,9 +1,10 @@
-import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { doc, updateDoc, serverTimestamp, collection, getDocs, query, where } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebase/config";
 import { COLLECTIONS } from "../firebase/collections";
 import { logActivity } from "./activityLogService";
 import { assertNotDemoAccount } from "../utils/demoGuard";
+import { syncBusinessPublicMirror, resyncAllPublicServices } from "./customerPortalService";
 
 /** Atualiza os dados cadastrais da empresa (seção "Empresa" das Configurações). */
 export async function updateCompanyProfile(businessId, data) {
@@ -48,4 +49,40 @@ export async function updatePreferences(businessId, { theme, currency, timezone 
         timezone,
         updatedAt: serverTimestamp(),
     });
+}
+
+export async function updateOnlineBookingSettings(businessId, currentBusiness, settings) {
+    assertNotDemoAccount(businessId);
+
+    const merged = {
+        ...currentBusiness,
+        onlineBooking: settings.onlineBooking,
+        businessHours: settings.businessHours,
+        blockedDates: settings.blockedDates,
+    };
+
+    await updateDoc(doc(db, COLLECTIONS.BUSINESSES, businessId), {
+        onlineBooking: settings.onlineBooking,
+        businessHours: settings.businessHours,
+        blockedDates: settings.blockedDates,
+        updatedAt: serverTimestamp(),
+    });
+
+    await logActivity(businessId, {
+        action: "online_booking_updated",
+        description: "Configurações de agendamento online atualizadas",
+    });
+
+    await syncBusinessPublicMirror(businessId, merged);
+
+    const showPricesChanged =
+        (currentBusiness.onlineBooking?.showPrices === true) !== (settings.onlineBooking?.showPrices === true);
+
+    if (showPricesChanged) {
+        const servicesSnap = await getDocs(
+            query(collection(db, COLLECTIONS.SERVICES), where("businessId", "==", businessId))
+        );
+        const services = servicesSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        await resyncAllPublicServices(businessId, services);
+    }
 }

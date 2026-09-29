@@ -14,6 +14,7 @@ import { db } from "../firebase/config";
 import { COLLECTIONS } from "../firebase/collections";
 import { assertNotDemoAccount } from "../utils/demoGuard";
 import { logActivity } from "./activityLogService";
+import { syncPublicServiceMirror, deletePublicServiceMirror } from "./customerPortalService";
 
 /**
  * Escuta em tempo real a lista de serviços do negócio, ordenada por nome.
@@ -36,7 +37,7 @@ export function subscribeServices(businessId, onChange, onError) {
 }
 
 export async function createService(businessId, data) {
-    await addDoc(collection(db, COLLECTIONS.SERVICES), {
+    const ref = await addDoc(collection(db, COLLECTIONS.SERVICES), {
         businessId,
         name: data.name.trim(),
         description: data.description || "",
@@ -44,6 +45,7 @@ export async function createService(businessId, data) {
         price: Number(data.price) || 0,
         duration: Number(data.duration) || 30,
         active: data.active ?? true,
+        availableOnline: data.availableOnline === true,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
     });
@@ -52,28 +54,40 @@ export async function createService(businessId, data) {
         action: "service_created",
         description: `Serviço "${data.name.trim()}" cadastrado`,
     });
+
+    await syncPublicServiceMirror(businessId, { id: ref.id, ...data, active: data.active ?? true }).catch((err) =>
+        console.error("[TLGestão] Erro ao sincronizar cardápio público:", err)
+    );
 }
 
 export async function updateService(businessId, serviceId, data) {
-    await updateDoc(doc(db, COLLECTIONS.SERVICES, serviceId), {
+    const updated = {
         name: data.name.trim(),
         description: data.description || "",
         category: data.category || "Outros",
         price: Number(data.price) || 0,
         duration: Number(data.duration) || 30,
         active: data.active ?? true,
+        availableOnline: data.availableOnline === true,
         updatedAt: serverTimestamp(),
-    });
+    };
+
+    await updateDoc(doc(db, COLLECTIONS.SERVICES, serviceId), updated);
 
     await logActivity(businessId, {
         action: "service_updated",
         description: `Serviço "${data.name.trim()}" editado`,
     });
+
+    await syncPublicServiceMirror(businessId, { id: serviceId, ...updated }).catch((err) =>
+        console.error("[TLGestão] Erro ao sincronizar cardápio público:", err)
+    );
 }
 
 export async function toggleServiceActive(businessId, service) {
+    const nextActive = !service.active;
     await updateDoc(doc(db, COLLECTIONS.SERVICES, service.id), {
-        active: !service.active,
+        active: nextActive,
         updatedAt: serverTimestamp(),
     });
 
@@ -81,6 +95,10 @@ export async function toggleServiceActive(businessId, service) {
         action: "service_updated",
         description: `Serviço "${service.name}" ${service.active ? "desativado" : "ativado"}`,
     });
+
+    await syncPublicServiceMirror(businessId, { ...service, active: nextActive }).catch((err) =>
+        console.error("[TLGestão] Erro ao sincronizar cardápio público:", err)
+    );
 }
 
 export async function deleteService(businessId, serviceId, serviceName) {
@@ -91,4 +109,6 @@ export async function deleteService(businessId, serviceId, serviceName) {
         action: "service_deleted",
         description: `Serviço "${serviceName}" excluído`,
     });
+
+    await deletePublicServiceMirror(businessId, serviceId);
 }
