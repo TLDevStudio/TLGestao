@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import { Bell, Check, Trash2, CheckCheck } from "lucide-react";
+import { Bell, Check, Trash2, CheckCheck, CalendarClock, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../../hooks/useNotifications";
 import { useAuth } from "../../contexts/AuthContext";
 import {
@@ -8,7 +9,7 @@ import {
     deleteNotification,
 } from "../../services/notificationService";
 import { getNotificationMeta } from "../../utils/notificationMeta";
-import { formatDateTime } from "../../utils/formatters";
+import { formatDateTime, formatAppointmentDateTime, toDate } from "../../utils/formatters";
 
 const TONE_BG = {
     amber: "bg-amber-100 text-amber-600",
@@ -19,6 +20,7 @@ const TONE_BG = {
 
 export default function NotificationsPanel({ open, onClose }) {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const { notifications, unreadIds, loading } = useNotifications();
     const panelRef = useRef(null);
 
@@ -49,6 +51,27 @@ export default function NotificationsPanel({ open, onClose }) {
         if (unreadIds.length > 0) {
             markAllAsRead(user.uid, unreadIds);
         }
+    };
+
+    // Notificações ligadas a um agendamento (têm id + data marcada) são clicáveis:
+    // marcam como lida e levam o empreendedor direto à aba de Agendamentos.
+    const openAppointmentFromNotification = (n) => {
+        const appointmentDate = toDate(n.appointmentDate);
+        if (!n.appointmentId || !appointmentDate) return;
+
+        if (!n.read) {
+            markAsRead(n.id).catch(() => { });
+        }
+
+        onClose();
+        navigate("/app/agendamentos", {
+            state: {
+                openAppointment: {
+                    id: n.appointmentId,
+                    date: appointmentDate.getTime(),
+                },
+            },
+        });
     };
 
     return (
@@ -147,11 +170,27 @@ export default function NotificationsPanel({ open, onClose }) {
                     notifications.map((n) => {
                         const meta = getNotificationMeta(n.type);
                         const Icon = meta.icon;
+                        const scheduledDate = toDate(n.appointmentDate);
+                        const isLinkable = !!(n.appointmentId && scheduledDate);
 
                         return (
                             <div
                                 key={n.id}
+                                {...(isLinkable
+                                    ? {
+                                        role: "button",
+                                        tabIndex: 0,
+                                        onClick: () => openAppointmentFromNotification(n),
+                                        onKeyDown: (e) => {
+                                            if (e.key === "Enter" || e.key === " ") {
+                                                e.preventDefault();
+                                                openAppointmentFromNotification(n);
+                                            }
+                                        },
+                                    }
+                                    : {})}
                                 className={`
+                                    ${isLinkable ? "cursor-pointer transition hover:bg-paper-dim/60" : ""}
                                     notification-item
                                     flex
                                     min-w-0
@@ -195,9 +234,24 @@ export default function NotificationsPanel({ open, onClose }) {
                                         {n.message}
                                     </p>
 
+                                    {isLinkable && (
+                                        <p className="mt-1 flex items-start gap-1.5 break-words rounded-lg bg-pine-900/10 px-2 py-1 text-xs font-medium capitalize text-pine-800">
+                                            <CalendarClock size={13} className="mt-px shrink-0" />
+                                            <span>{formatAppointmentDateTime(scheduledDate)}</span>
+                                        </p>
+                                    )}
+
                                     <p className="mt-0.5 break-words text-[11px] text-ink-soft/70">
+                                        {isLinkable ? "Solicitado em " : ""}
                                         {formatDateTime(n.createdAt)}
                                     </p>
+
+                                    {isLinkable && (
+                                        <p className="mt-0.5 flex items-center gap-0.5 text-[11px] font-medium text-pine-800">
+                                            Ver agendamento
+                                            <ChevronRight size={12} />
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* Ações */}
@@ -205,9 +259,10 @@ export default function NotificationsPanel({ open, onClose }) {
                                     {!n.read && (
                                         <button
                                             type="button"
-                                            onClick={() =>
-                                                markAsRead(n.id)
-                                            }
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                markAsRead(n.id);
+                                            }}
                                             className="
                                                 rounded-lg
                                                 p-1.5
@@ -225,9 +280,10 @@ export default function NotificationsPanel({ open, onClose }) {
 
                                     <button
                                         type="button"
-                                        onClick={() =>
-                                            deleteNotification(n.id)
-                                        }
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            deleteNotification(n.id);
+                                        }}
                                         className="
                                             rounded-lg
                                             p-1.5

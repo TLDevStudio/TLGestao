@@ -133,7 +133,7 @@ export async function createOnlineAppointment({ businessId, serviceId, slotISO }
     // 3) Log e notificação para o painel do empreendedor — feito depois, à
     // parte, para não arriscar a transação principal por causa de um
     // registro secundário.
-    try {
+    const commitLogAndNotification = async (notificationExtra) => {
         const batch = writeBatch(db);
         batch.set(doc(collection(db, COLLECTIONS.ACTIVITY_LOGS)), {
             businessId,
@@ -148,10 +148,25 @@ export async function createOnlineAppointment({ businessId, serviceId, slotISO }
             message: `${profile.name || "Cliente"} · ${service.name || ""}`,
             read: false,
             createdAt: serverTimestamp(),
+            ...notificationExtra,
         });
         await batch.commit();
+    };
+
+    try {
+        // Inclui o id e a data/hora marcada, para o painel do empreendedor
+        // mostrar a data exata do agendamento e abrir os detalhes ao clicar.
+        await commitLogAndNotification({
+            appointmentId: appointmentRef.id,
+            appointmentDate: Timestamp.fromDate(slotStart),
+        });
     } catch (err) {
-        console.warn("[TLGestão] Agendamento criado, mas log/notificação falhou:", err);
+        try {
+            // Segurança: se algo rejeitar os campos novos, grava do jeito de sempre.
+            await commitLogAndNotification({});
+        } catch (err2) {
+            console.warn("[TLGestão] Agendamento criado, mas log/notificação falhou:", err2 || err);
+        }
     }
 
     return { success: true, appointmentId: appointmentRef.id };

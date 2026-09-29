@@ -8,6 +8,7 @@ import {
     orderBy,
     query,
     serverTimestamp,
+    Timestamp,
     updateDoc,
     where,
     writeBatch,
@@ -19,16 +20,29 @@ import { COLLECTIONS } from "../firebase/collections";
 const MAX_NOTIFICATIONS = 30;
 
 /** Cria uma notificação. Chamado internamente por outros serviços (não pela UI diretamente). */
-export async function createNotification(businessId, { type, title, message }) {
+export async function createNotification(
+    businessId,
+    { type, title, message, appointmentId, appointmentDate }
+) {
     try {
-        await addDoc(collection(db, COLLECTIONS.NOTIFICATIONS), {
+        const payload = {
             businessId,
             type,
             title,
             message,
             read: false,
             createdAt: serverTimestamp(),
-        });
+        };
+
+        // Opcional: notificações ligadas a um agendamento guardam o id e a data
+        // marcada, para o painel mostrar a data exata e levar o empreendedor
+        // direto ao agendamento. Sem esses campos, tudo funciona como antes.
+        if (appointmentId && appointmentDate instanceof Date) {
+            payload.appointmentId = appointmentId;
+            payload.appointmentDate = Timestamp.fromDate(appointmentDate);
+        }
+
+        await addDoc(collection(db, COLLECTIONS.NOTIFICATIONS), payload);
     } catch (err) {
         // Notificação é um "extra" — uma falha aqui nunca deve travar a ação principal
         // (criar venda, ajustar estoque, etc.), então só logamos o erro.

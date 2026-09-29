@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Plus, CalendarClock } from "lucide-react";
 import Button from "../components/ui/Button";
 import EmptyState from "../components/ui/EmptyState";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { Spinner } from "../components/ui/Loading";
 import AppointmentFormModal from "../components/appointments/AppointmentFormModal";
+import AppointmentDetailsModal from "../components/appointments/AppointmentDetailsModal";
 import AppointmentCard, { statusTone } from "../components/appointments/AppointmentCard";
 import { useAppointments, useCalendarNavigation } from "../hooks/useAppointments";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
-import { deleteAppointment } from "../services/appointmentService";
+import { deleteAppointment, getAppointmentById } from "../services/appointmentService";
 import useIsDemoAccount from "../hooks/useDemoAccount";
 import { DEMO_DISABLED_MESSAGE } from "../utils/demoGuard";
 import {
@@ -39,6 +41,33 @@ export default function Agendamentos() {
     const [defaultDate, setDefaultDate] = useState(null);
     const [toDelete, setToDelete] = useState(null);
     const [deleting, setDeleting] = useState(false);
+    const [detailsAppointment, setDetailsAppointment] = useState(null);
+
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    // Vindo de uma notificação: vai para o dia marcado e abre os detalhes do agendamento.
+    useEffect(() => {
+        const target = location.state?.openAppointment;
+        if (!target?.id || !user) return;
+
+        // Limpa o state para que recarregar/voltar a página não reabra o modal.
+        navigate(location.pathname, { replace: true, state: null });
+
+        const targetDate = new Date(target.date);
+        if (!Number.isNaN(targetDate.getTime())) {
+            setView("day");
+            goToDate(targetDate);
+        }
+
+        getAppointmentById(user.uid, target.id)
+            .then((appointment) => {
+                if (appointment) setDetailsAppointment(appointment);
+                else toast.info("Este agendamento não existe mais.");
+            })
+            .catch(() => toast.error("Não foi possível abrir o agendamento."));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location.state]);
 
     const openCreateModal = (date) => {
         setEditingAppointment(null);
@@ -136,6 +165,7 @@ export default function Agendamentos() {
                             day={referenceDate}
                             appointments={appointmentsForDay(referenceDate)}
                             onEdit={openEditModal}
+                            onView={setDetailsAppointment}
                             onDelete={setToDelete}
                             onCreate={() => openCreateModal(referenceDate)}
                         />
@@ -150,6 +180,7 @@ export default function Agendamentos() {
                                 setView("day");
                             }}
                             onEdit={openEditModal}
+                            onView={setDetailsAppointment}
                         />
                     )}
 
@@ -174,6 +205,17 @@ export default function Agendamentos() {
                 defaultDate={defaultDate}
             />
 
+            {detailsAppointment && (
+                <AppointmentDetailsModal
+                    appointment={detailsAppointment}
+                    onClose={() => setDetailsAppointment(null)}
+                    onEdit={(appointment) => {
+                        setDetailsAppointment(null);
+                        openEditModal(appointment);
+                    }}
+                />
+            )}
+
             <ConfirmDialog
                 open={!!toDelete}
                 onClose={() => setToDelete(null)}
@@ -187,7 +229,7 @@ export default function Agendamentos() {
     );
 }
 
-function DayView({ day, appointments, onEdit, onDelete, onCreate }) {
+function DayView({ day, appointments, onEdit, onView, onDelete, onCreate }) {
     if (appointments.length === 0) {
         return (
             <EmptyState
@@ -210,6 +252,7 @@ function DayView({ day, appointments, onEdit, onDelete, onCreate }) {
                     key={a.id}
                     appointment={a}
                     onEdit={() => onEdit(a)}
+                    onView={() => onView(a)}
                     onDelete={() => onDelete(a)}
                 />
             ))}
@@ -217,7 +260,7 @@ function DayView({ day, appointments, onEdit, onDelete, onCreate }) {
     );
 }
 
-function WeekView({ days, appointmentsForDay, onSelectDay, onEdit }) {
+function WeekView({ days, appointmentsForDay, onSelectDay, onEdit, onView }) {
     return (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-7">
             {days.map((day) => {
@@ -244,7 +287,7 @@ function WeekView({ days, appointmentsForDay, onSelectDay, onEdit }) {
                                 <p className="py-2 text-center text-xs text-ink-soft">—</p>
                             ) : (
                                 dayAppointments.map((a) => (
-                                    <AppointmentCard key={a.id} appointment={a} onEdit={() => onEdit(a)} compact />
+                                    <AppointmentCard key={a.id} appointment={a} onEdit={() => onEdit(a)} onView={() => onView(a)} compact />
                                 ))
                             )}
                         </div>

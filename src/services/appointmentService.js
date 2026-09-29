@@ -111,6 +111,8 @@ export async function createAppointment(businessId, data) {
             type: "appointment_today",
             title: "Cliente agendado para hoje",
             message: `${data.clientName} · ${data.serviceName} às ${formatHHMM(data.date)}`,
+            appointmentId: appointmentRef.id,
+            appointmentDate: data.date,
         });
     }
 }
@@ -126,6 +128,14 @@ function isToday(date) {
 
 function formatHHMM(date) {
     return date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+}
+
+/** Busca um agendamento pelo id (usado ao abrir a partir de uma notificação). */
+export async function getAppointmentById(businessId, appointmentId) {
+    const snap = await getDoc(doc(db, COLLECTIONS.APPOINTMENTS, appointmentId));
+    if (!snap.exists() || snap.data().businessId !== businessId) return null;
+    const data = snap.data();
+    return { id: snap.id, ...data, dateObj: data.date?.toDate?.() || null };
 }
 
 export async function updateAppointment(businessId, appointmentId, data) {

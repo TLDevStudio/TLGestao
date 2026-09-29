@@ -16,11 +16,11 @@ export function statusTone(status) {
     return STATUS_TONE[status] || "neutral";
 }
 
-export default function AppointmentCard({ appointment, onEdit, onDelete, compact = false }) {
+export default function AppointmentCard({ appointment, onEdit, onDelete, onView, compact = false }) {
     if (compact) {
         return (
             <button
-                onClick={onEdit}
+                onClick={onView || onEdit}
                 className="w-full rounded-lg border border-line bg-surface px-2 py-1.5 text-left text-xs hover:border-pine-700 hover:shadow-sm"
             >
                 <div className="flex items-center justify-between gap-1">
@@ -32,8 +32,27 @@ export default function AppointmentCard({ appointment, onEdit, onDelete, compact
         );
     }
 
+    // Com onView, o cartão inteiro abre os detalhes; editar/excluir continuam nos ícones.
+    const viewProps = onView
+        ? {
+            role: "button",
+            tabIndex: 0,
+            onClick: onView,
+            onKeyDown: (e) => {
+                if (e.target !== e.currentTarget) return;
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onView();
+                }
+            },
+        }
+        : {};
+
     return (
-        <div className="flex items-start gap-4 rounded-2xl border border-line bg-surface p-4">
+        <div
+            {...viewProps}
+            className={`flex items-start gap-4 rounded-2xl border border-line bg-surface p-4 ${onView ? "cursor-pointer transition hover:border-pine-700 hover:shadow-sm" : ""}`}
+        >
             <div className="flex w-16 shrink-0 flex-col items-center rounded-xl bg-paper-dim py-2 text-center">
                 <span className="font-display text-base font-semibold text-ink">
                     {formatTime(appointment.dateObj)}
@@ -59,14 +78,20 @@ export default function AppointmentCard({ appointment, onEdit, onDelete, compact
 
             <div className="flex shrink-0 gap-1">
                 <button
-                    onClick={onEdit}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit();
+                    }}
                     className="rounded-lg p-2 text-ink-soft hover:bg-paper-dim hover:text-ink"
                     aria-label="Editar agendamento"
                 >
                     <Pencil size={15} />
                 </button>
                 <button
-                    onClick={onDelete}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete();
+                    }}
                     className="rounded-lg p-2 text-ink-soft hover:bg-danger-100 hover:text-danger"
                     aria-label="Excluir agendamento"
                 >

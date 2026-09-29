@@ -17,6 +17,20 @@ export function formatDateTime(date) {
   }).format(d);
 }
 
+/** Ex.: "quinta-feira, 01/10/2026 às 14:30" — usado para a data marcada de um agendamento. */
+export function formatAppointmentDateTime(date) {
+  const d = toDate(date);
+  if (!d) return "—";
+  const day = new Intl.DateTimeFormat("pt-BR", {
+    weekday: "long",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(d);
+  const time = new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit" }).format(d);
+  return `${day} às ${time}`;
+}
+
 export function formatPercent(value = 0) {
   const sign = value > 0 ? "+" : "";
   return `${sign}${value.toFixed(1)}%`;
